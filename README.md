@@ -46,15 +46,6 @@ bundle exec rspec
 3. Follow the linter (`bin/rubocop -A`)
 4. Open a PR with a succinct title + why
 
-**#Done:**
-- Devise for logins, passwordless by default
-- PostgresQL DB
-- Rspec and Factorybot for quick testing
-- Rubocop and Standard for linting
-- Tailwindcss for beautiful UI styling
-- Turbo and Stimulus
-- Latest Ruby and Rails versions, supporting `solid_cache`, `solid_queue`, and `solid_cable`
-
 ### Roadmap
 - [ ] Stripe payments via Pay
 - [ ] Optional multi-tenant mode (ActsAsTenant)
@@ -63,3 +54,12 @@ bundle exec rspec
 - [ ] JSON API v1
 - [ ] Static-site generator for marketing pages
 - [ ] Docker & Compose
+
+**Done:**
+- Devise for logins, passwordless by default
+- PostgresQL DB
+- Rspec and Factorybot for quick testing
+- Rubocop and Standard for linting
+- Tailwindcss for beautiful UI styling
+- Turbo and Stimulus
+- Latest Ruby and Rails versions, supporting `solid_cache`, `solid_queue`, and `solid_cable`
