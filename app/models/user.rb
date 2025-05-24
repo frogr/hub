@@ -3,9 +3,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-         
+
   has_many :passwordless_sessions, as: :authenticatable, dependent: :destroy
-  
+
   def passwordless_with(session)
     passwordless_sessions.create!(
       user_agent: session[:user_agent],

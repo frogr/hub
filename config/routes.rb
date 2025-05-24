@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
-  
-  resources :sessions, only: [:new, :create, :show]
+
+  resources :sessions, only: [ :new, :create, :show ]
   get "sign_in/:token", to: "sessions#show", as: :sign_in
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

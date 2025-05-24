@@ -12,8 +12,8 @@ class CreatePasswordlessSessions < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
-    add_index :passwordless_sessions, [:authenticatable_type, :authenticatable_id]
+
+    add_index :passwordless_sessions, [ :authenticatable_type, :authenticatable_id ]
     add_index :passwordless_sessions, :token, unique: true
   end
 end

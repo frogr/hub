@@ -8,7 +8,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("Sign in to your account")
-      expect(mail.to).to eq([user.email])
+      expect(mail.to).to eq([ user.email ])
     end
 
     it "renders the body" do

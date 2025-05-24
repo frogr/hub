@@ -35,7 +35,7 @@ RSpec.describe User, type: :model do
         }
 
         passwordless_session = user.passwordless_with(session_params)
-        
+
         expect(passwordless_session).to be_persisted
         expect(passwordless_session.claimed_at).to be_nil
         expect(passwordless_session.expires_at).to be > Time.current

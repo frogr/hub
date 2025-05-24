@@ -11,7 +11,7 @@ class UserMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: 'Sign in to your account'
+      subject: "Sign in to your account"
     )
   end
 end
