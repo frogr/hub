@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe "Sessions", type: :request do
   let(:user) { create(:user) }
 
+  before do
+    ActionMailer::Base.deliveries.clear
+  end
+
   describe "GET /sessions/new" do
     it "returns http success" do
       get "/sessions/new"
