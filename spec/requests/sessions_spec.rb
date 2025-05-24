@@ -53,7 +53,7 @@ RSpec.describe "Sessions", type: :request do
       it "signs in the user and marks session as claimed" do
         get "/sign_in/#{passwordless_session.token}"
 
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(dashboard_index_path)
         expect(flash[:notice]).to include('Successfully signed in!')
 
         passwordless_session.reload
@@ -78,6 +78,23 @@ RSpec.describe "Sessions", type: :request do
 
         expect(response).to redirect_to(new_session_path)
         expect(flash[:alert]).to include('Invalid or expired magic link')
+      end
+    end
+  end
+
+  describe "DELETE /sessions/:id" do
+    let(:user) { create(:user) }
+
+    context "when user is signed in" do
+      it "signs out the user and redirects to login" do
+        # Simulate being signed in by setting up the session
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
+        allow_any_instance_of(ApplicationController).to receive(:user_signed_in?).and_return(true)
+
+        delete "/sessions/#{user.id}"
+
+        expect(response).to redirect_to(new_session_path)
+        expect(flash[:notice]).to include('Successfully signed out!')
       end
     end
   end

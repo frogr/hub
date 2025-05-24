@@ -1,0 +1,49 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <div class="bg-white shadow">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <div class="flex items-center space-x-4">
+          <span class="text-gray-600">Welcome, <%= current_user.email %></span>
+          <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Info -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-4">Your Account</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <p class="mt-1 text-sm text-gray-900"><%= current_user.email %></p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Member Since</label>
+          <p class="mt-1 text-sm text-gray-900"><%= current_user.created_at.strftime("%B %d, %Y") %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold mb-2">Quick Stats</h3>
+        <p class="text-gray-600">Your personalized metrics will appear here.</p>
+      </div>
+      
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold mb-2">Recent Activity</h3>
+        <p class="text-gray-600">Your recent activity will be shown here.</p>
+      </div>
+      
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold mb-2">Quick Actions</h3>
+        <p class="text-gray-600">Common actions and shortcuts.</p>
+      </div>
+    </div>
+  </div>
+</div>

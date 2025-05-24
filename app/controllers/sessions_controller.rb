@@ -11,6 +11,16 @@ class SessionsController < ApplicationController
         user_agent: request.user_agent,
         remote_addr: request.remote_ip
       )
+      
+      magic_link_url = sign_in_url(token: session.token)
+      
+      if Rails.env.development?
+        puts "\n" + "="*50
+        puts "MAGIC LINK FOR DEBUG:"
+        puts magic_link_url
+        puts "="*50 + "\n"
+      end
+      
       UserMailer.magic_link(@user, session).deliver_now
 
       redirect_to new_session_path, notice: "Check your email for a magic link!"
@@ -27,9 +37,14 @@ class SessionsController < ApplicationController
     if session
       session.update!(claimed_at: Time.current)
       sign_in(session.authenticatable)
-      redirect_to root_path, notice: "Successfully signed in!"
+      redirect_to dashboard_index_path, notice: "Successfully signed in!"
     else
       redirect_to new_session_path, alert: "Invalid or expired magic link."
     end
+  end
+
+  def destroy
+    sign_out(current_user)
+    redirect_to new_session_path, notice: "Successfully signed out!"
   end
 end

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :sessions, only: [ :new, :create, :show ]
+  resources :sessions, only: [ :new, :create, :show, :destroy ]
   get "sign_in/:token", to: "sessions#show", as: :sign_in
   
   resources :dashboard, only: [ :index ]
