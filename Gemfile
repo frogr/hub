@@ -51,6 +51,24 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  
+  # RSpec testing framework
+  gem "rspec-rails"
+  
+  # Factory Bot for test data generation
+  gem "factory_bot_rails"
+  
+  # Shoulda matchers for simple one-liner tests
+  gem "shoulda-matchers"
+  
+  # RuboCop extension for Rails
+  gem "rubocop-rails"
+  
+  # Ruby standard style guide
+  gem "standard"
+  
+  # Load environment variables from .env file
+  gem "dotenv-rails"
 end
 
 group :development do
