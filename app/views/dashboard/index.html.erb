@@ -1,0 +1,53 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Hero Section -->
+  <div class="bg-blue-600 text-white">
+    <div class="container mx-auto px-4 py-16">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to Hub</h1>
+        <p class="text-xl md:text-2xl mb-8">Your central dashboard for everything you need</p>
+        
+        <!-- Auth Links -->
+        <div class="space-x-4">
+          <%= link_to "Sign Up", new_user_registration_path, class: "bg-white text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition duration-300" %>
+          <%= link_to "Log In", new_session_path, class: "bg-transparent border-2 border-white text-white font-bold py-3 px-6 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300" %>
+          <%= link_to "Register", new_user_registration_path, class: "bg-blue-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-900 transition duration-300" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="container mx-auto px-4 py-16">
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Feature 1 -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="w-12 h-12 bg-blue-100 rounded-lg mb-4"></div>
+        <h3 class="text-xl font-semibold mb-2">Feature One</h3>
+        <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="w-12 h-12 bg-green-100 rounded-lg mb-4"></div>
+        <h3 class="text-xl font-semibold mb-2">Feature Two</h3>
+        <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="w-12 h-12 bg-purple-100 rounded-lg mb-4"></div>
+        <h3 class="text-xl font-semibold mb-2">Feature Three</h3>
+        <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call to Action -->
+  <div class="bg-gray-100">
+    <div class="container mx-auto px-4 py-16 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to get started?</h2>
+      <p class="text-xl text-gray-600 mb-8">Join users who trust Hub for their daily workflow</p>
+      <%= link_to "Get Started Today", new_user_registration_path, class: "bg-blue-600 text-white font-bold py-4 px-8 rounded-lg hover:bg-blue-700 transition duration-300" %>
+    </div>
+  </div>
+</div>
