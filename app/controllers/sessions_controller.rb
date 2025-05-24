@@ -11,16 +11,16 @@ class SessionsController < ApplicationController
         user_agent: request.user_agent,
         remote_addr: request.remote_ip
       )
-      
+
       magic_link_url = sign_in_url(token: session.token)
-      
+
       if Rails.env.development?
         puts "\n" + "="*50
         puts "MAGIC LINK FOR DEBUG:"
         puts magic_link_url
         puts "="*50 + "\n"
       end
-      
+
       UserMailer.magic_link(@user, session).deliver_now
 
       redirect_to new_session_path, notice: "Check your email for a magic link!"

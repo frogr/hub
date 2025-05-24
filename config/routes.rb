@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resources :sessions, only: [ :new, :create, :show, :destroy ]
   get "sign_in/:token", to: "sessions#show", as: :sign_in
-  
+
   resources :dashboard, only: [ :index ]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
