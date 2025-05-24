@@ -19,8 +19,17 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.1
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm install
+
       - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+        run: bundle exec brakeman -q
 
   scan_js:
     runs-on: ubuntu-latest
@@ -34,6 +43,15 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.1
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm install
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
@@ -50,8 +68,17 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.1
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm install
+
       - name: Lint code for consistent style
-        run: bin/rubocop -f github
+        run: bundle exec rubocop
 
   test:
     runs-on: ubuntu-latest
@@ -85,12 +112,23 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21.6.1
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm install
+
       - name: Run tests
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test test:system
+        run: |
+          bin/rails db:test:prepare
+          bundle exec rspec
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
