@@ -18,7 +18,7 @@ RSpec.describe User, type: :model do
         }
 
         expect {
-          user.passwordless_with(session_params)
+          user.passwordless_with(**session_params)
         }.to change(PasswordlessSession, :count).by(1)
 
         session = user.passwordless_sessions.last
@@ -34,7 +34,7 @@ RSpec.describe User, type: :model do
           remote_addr: '127.0.0.1'
         }
 
-        passwordless_session = user.passwordless_with(session_params)
+        passwordless_session = user.passwordless_with(**session_params)
 
         expect(passwordless_session).to be_persisted
         expect(passwordless_session.claimed_at).to be_nil
