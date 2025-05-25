@@ -25,7 +25,7 @@ RSpec.describe StripeWebhookService do
       end
 
       it 'delegates to CheckoutSessionCompletedHandler' do
-        expect_any_instance_of(StripeWebhookService::CheckoutSessionCompletedHandler)
+        expect_any_instance_of(StripeWebhook::CheckoutSessionCompletedHandler)
           .to receive(:handle)
 
         service.process
@@ -75,7 +75,7 @@ RSpec.describe StripeWebhookService do
       end
 
       it 'delegates to SubscriptionUpdatedHandler' do
-        expect_any_instance_of(StripeWebhookService::SubscriptionUpdatedHandler)
+        expect_any_instance_of(StripeWebhook::SubscriptionUpdatedHandler)
           .to receive(:handle)
 
         service.process
@@ -125,7 +125,7 @@ RSpec.describe StripeWebhookService do
       end
 
       it 'delegates to SubscriptionDeletedHandler' do
-        expect_any_instance_of(StripeWebhookService::SubscriptionDeletedHandler)
+        expect_any_instance_of(StripeWebhook::SubscriptionDeletedHandler)
           .to receive(:handle)
 
         service.process
@@ -151,7 +151,7 @@ RSpec.describe StripeWebhookService do
       end
 
       it 'delegates to PaymentFailedHandler' do
-        expect_any_instance_of(StripeWebhookService::PaymentFailedHandler)
+        expect_any_instance_of(StripeWebhook::PaymentFailedHandler)
           .to receive(:handle)
 
         service.process
