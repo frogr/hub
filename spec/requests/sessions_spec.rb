@@ -16,8 +16,6 @@ RSpec.describe "Sessions", type: :request do
 
   describe "POST /sessions" do
     context "when user has passwordless login enabled" do
-      let(:user) { create(:user, passwordless_login_enabled: true) }
-
       it "creates a passwordless session and sends magic link email" do
         expect {
           post "/sessions", params: { email: user.email }
@@ -25,18 +23,20 @@ RSpec.describe "Sessions", type: :request do
           .and change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(response).to redirect_to(new_session_path)
-        expect(flash[:notice]).to include('Check your email for a magic link!')
+        expect(flash[:notice]).to eq('Magic link sent to your email')
       end
     end
 
     context "when user has passwordless login disabled" do
-      let(:user) { create(:user, passwordless_login_enabled: false) }
+      before do
+        allow_any_instance_of(User).to receive(:passwordless_login_enabled?).and_return(false)
+      end
 
       it "redirects to password login" do
         post "/sessions", params: { email: user.email }
 
         expect(response).to redirect_to(new_user_session_path)
-        expect(flash[:alert]).to include('Please use password login')
+        expect(flash[:alert]).to eq('Password login required for this account')
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe "Sessions", type: :request do
         get "/sign_in/#{passwordless_session.token}"
 
         expect(response).to redirect_to(dashboard_index_path)
-        expect(flash[:notice]).to include('Successfully signed in!')
+        expect(flash[:notice]).to eq('Successfully authenticated')
 
         passwordless_session.reload
         expect(passwordless_session.claimed_at).to be_present

@@ -27,6 +27,100 @@ RSpec.describe PasswordlessSession, type: :model do
         expect(PasswordlessSession.available).to contain_exactly(available_session)
       end
     end
+
+    describe '.expired' do
+      it 'returns only expired sessions' do
+        expect(PasswordlessSession.expired).to contain_exactly(expired_session)
+      end
+    end
+
+    describe '.claimed' do
+      it 'returns only claimed sessions' do
+        expect(PasswordlessSession.claimed).to contain_exactly(claimed_session)
+      end
+    end
+  end
+
+  describe 'instance methods' do
+    let(:session) { create(:passwordless_session, authenticatable: user, expires_at: 1.hour.from_now) }
+
+    describe '#claim!' do
+      it 'updates claimed_at timestamp' do
+        expect { session.claim! }.to change(session, :claimed_at).from(nil).to(be_within(1.second).of(Time.current))
+      end
+    end
+
+    describe '#claimed?' do
+      context 'when claimed_at is present' do
+        before { session.update!(claimed_at: Time.current) }
+
+        it 'returns true' do
+          expect(session.claimed?).to be true
+        end
+      end
+
+      context 'when claimed_at is nil' do
+        it 'returns false' do
+          expect(session.claimed?).to be false
+        end
+      end
+    end
+
+    describe '#expired?' do
+      context 'when expires_at is in the past' do
+        before { session.update!(expires_at: 1.hour.ago) }
+
+        it 'returns true' do
+          expect(session.expired?).to be true
+        end
+      end
+
+      context 'when expires_at is in the future' do
+        it 'returns false' do
+          expect(session.expired?).to be false
+        end
+      end
+    end
+
+    describe '#available?' do
+      context 'when session is not claimed and not expired' do
+        it 'returns true' do
+          expect(session.available?).to be true
+        end
+      end
+
+      context 'when session is claimed' do
+        before { session.claim! }
+
+        it 'returns false' do
+          expect(session.available?).to be false
+        end
+      end
+
+      context 'when session is expired' do
+        before { session.update!(expires_at: 1.hour.ago) }
+
+        it 'returns false' do
+          expect(session.available?).to be false
+        end
+      end
+    end
+
+    describe '#expires_in' do
+      context 'when session is not expired' do
+        it 'returns hours until expiration' do
+          expect(session.expires_in).to be_within(0.1).of(1.0)
+        end
+      end
+
+      context 'when session is expired' do
+        before { session.update!(expires_at: 1.hour.ago) }
+
+        it 'returns 0' do
+          expect(session.expires_in).to eq(0)
+        end
+      end
+    end
   end
 
   describe 'token generation' do
