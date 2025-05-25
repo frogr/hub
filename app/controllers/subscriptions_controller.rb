@@ -12,6 +12,10 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
+    unless @plan
+      redirect_to subscriptions_path, alert: "Please select a plan" and return
+    end
+
     service = SubscriptionService.new(current_user, @plan)
 
     session = service.create_checkout_session(

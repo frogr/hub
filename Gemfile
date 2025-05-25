@@ -76,6 +76,9 @@ group :development, :test do
 
   # Load environment variables from .env file
   gem "dotenv-rails"
+
+  # Rails controller testing for RSpec
+  gem "rails-controller-testing"
 end
 
 group :development do
