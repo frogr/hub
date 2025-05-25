@@ -28,9 +28,11 @@ RSpec.describe 'Webhooks', type: :request do
 
     context 'with valid signature' do
       it 'returns success' do
-        expect(Stripe::Webhook).to receive(:construct_event)
-          .with(payload, signature, webhook_secret)
+        expect_any_instance_of(StripeSignatureVerificationService)
+          .to receive(:verify_and_construct_event)
           .and_return(Stripe::Event.construct_from({ type: 'test.event' }))
+
+        expect_any_instance_of(StripeWebhookService).to receive(:process)
 
         post_webhook({ type: 'test.event' })
 
@@ -41,8 +43,9 @@ RSpec.describe 'Webhooks', type: :request do
 
     context 'with invalid JSON payload' do
       it 'returns bad request' do
-        allow(Stripe::Webhook).to receive(:construct_event)
-          .and_raise(JSON::ParserError.new('Invalid JSON'))
+        allow_any_instance_of(StripeSignatureVerificationService)
+          .to receive(:verify_and_construct_event)
+          .and_raise(StripeSignatureVerificationService::InvalidPayloadError.new('Invalid JSON payload'))
 
         post webhooks_stripe_path,
              params: 'invalid json',
@@ -55,8 +58,9 @@ RSpec.describe 'Webhooks', type: :request do
 
     context 'with invalid signature' do
       it 'returns bad request' do
-        allow(Stripe::Webhook).to receive(:construct_event)
-          .and_raise(Stripe::SignatureVerificationError.new('Invalid signature', signature))
+        allow_any_instance_of(StripeSignatureVerificationService)
+          .to receive(:verify_and_construct_event)
+          .and_raise(StripeSignatureVerificationService::InvalidSignatureError.new('Invalid webhook signature'))
 
         post_webhook({ type: 'test.event' })
 
@@ -70,7 +74,9 @@ RSpec.describe 'Webhooks', type: :request do
       let(:plan) { create(:plan, :with_stripe_price) }
 
       before do
-        allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+        allow_any_instance_of(StripeSignatureVerificationService)
+          .to receive(:verify_and_construct_event)
+          .and_return(event)
       end
 
       describe 'checkout.session.completed' do
@@ -264,8 +270,10 @@ RSpec.describe 'Webhooks', type: :request do
         end
 
         it 'catches and logs errors without failing the request' do
+          # In test environment, errors are re-raised by design, so we need to allow that
+          allow(Rails.env).to receive(:test?).and_return(false)
           allow(User).to receive(:find_by).and_raise(StandardError.new('Database error'))
-          expect(Rails.logger).to receive(:error).with('Error handling Stripe webhook: Database error')
+          expect(Rails.logger).to receive(:error).with('Error handling Stripe webhook checkout.session.completed: Database error')
 
           post_webhook({ type: 'checkout.session.completed' })
           expect(response).to have_http_status(:ok)
