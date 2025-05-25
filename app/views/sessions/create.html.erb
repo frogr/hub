@@ -1,24 +1,26 @@
-<div class="min-h-screen bg-gray-50 flex items-center justify-center">
-  <div class="max-w-md w-full space-y-8">
-    <div class="text-center">
-      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<div class="min-h-screen flex items-center justify-center">
+  <div class="<%= DesignSystemHelper::CONTAINER_NARROW %>">
+    <div class="text-center mb-8">
+      <div class="w-20 h-20 bg-green-800/30 border border-green-600/50 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 <%= DesignSystemHelper::TEXT_SUCCESS %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
         </svg>
       </div>
-      <h2 class="text-3xl font-bold text-gray-900 mb-2">Check your email</h2>
-      <p class="text-gray-600">We've sent a magic link to your email address. Click the link to sign in to your account.</p>
+      <h1 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Check your email</h1>
+      <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">We've sent a magic link to your email address. Click the link to sign in to your account.</p>
     </div>
     
-    <div class="bg-white rounded-lg shadow-md p-8">
-      <div class="text-center space-y-4">
-        <p class="text-sm text-gray-600">
+    <div class="<%= DesignSystemHelper::CARD %>">
+      <div class="<%= DesignSystemHelper::CARD_BODY %> text-center space-y-6">
+        <p class="<%= DesignSystemHelper::TEXT_BODY_SM %> <%= DesignSystemHelper::TEXT_SECONDARY %>">
           Didn't receive the email? Check your spam folder or 
-          <%= link_to "try again", new_session_path, class: "font-medium text-blue-600 hover:text-blue-500" %>.
+          <%= link_to "try again", new_session_path, class: DesignSystemHelper::LINK %>.
         </p>
         
-        <div class="border-t pt-4">
-          <%= link_to "← Back to sign in", new_session_path, class: "text-sm font-medium text-gray-600 hover:text-gray-500" %>
+        <div class="<%= DesignSystemHelper::DIVIDER %>"></div>
+        
+        <div>
+          <%= link_to "← Back to sign in", new_session_path, class: DesignSystemHelper::LINK_SUBTLE %>
         </div>
       </div>
     </div>

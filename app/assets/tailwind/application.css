@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Colors */
   --color-primary-50: #F5D9F9;
   --color-primary-100: #E39EED;
   --color-primary-200: #C366D0;
@@ -46,14 +47,20 @@
   --color-neutral-900: #171717;
   --color-neutral-950: #0A0A0A;
 
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #FAFAFA;
+  --color-surface-raised: #FFFFFF;
+
   --color-success: #10B981;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
   --color-info: #3B82F6;
 
+  /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   --font-mono: SF Mono, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 
+  /* Border Radius */
   --radius-sm: 0.25rem;
   --radius-DEFAULT: 0.5rem;
   --radius-md: 0.625rem;
@@ -62,6 +69,7 @@
   --radius-2xl: 1.25rem;
   --radius-3xl: 1.5rem;
 
+  /* Shadows */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-sm: 0 2px 4px -1px rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.03);
   --shadow-DEFAULT: 0 4px 6px -2px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03);
@@ -72,11 +80,49 @@
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
   --shadow-none: none;
   
+  /* Skeuomorphic shadows */
   --shadow-neumorphic: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
   --shadow-neumorphic-sm: 5px 5px 15px #d9d9d9, -5px -5px 15px #ffffff;
   --shadow-neumorphic-inset: inset 5px 5px 10px #d9d9d9, inset -5px -5px 10px #ffffff;
 
+  /* Animations */
   --animate-fade-in: fadeIn 0.2s ease-in-out;
   --animate-slide-up: slideUp 0.3s ease-out;
   --animate-scale-in: scaleIn 0.2s ease-out;
+
+  /* Custom spacing */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+  --spacing-128: 32rem;
+}
+
+/* Add gradients as custom utilities */
+@layer utilities {
+  .bg-gradient-primary {
+    background-image: linear-gradient(135deg, #4F1C51 0%, #210F37 100%);
+  }
+  
+  .bg-gradient-accent {
+    background-image: linear-gradient(135deg, #DCA06D 0%, #A55B4B 100%);
+  }
+  
+  .bg-gradient-subtle {
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }

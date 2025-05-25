@@ -1,25 +1,25 @@
-<section class="section bg-gradient-to-br from-primary-50 via-white to-accent-50">
-  <div class="container-wide">
+<section class="<%= DesignSystemHelper::SECTION %>">
+  <div class="<%= DesignSystemHelper::CONTAINER_WIDE %>">
     <div class="text-center mb-12">
       <div class="inline-flex items-center justify-center mb-4">
-        <div class="badge-primary">
+        <div class="<%= DesignSystemHelper::BADGE_PRIMARY %>">
           <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
           </svg>
           Simple, transparent pricing
         </div>
       </div>
-      <h1 class="text-5xl md:text-6xl font-bold text-primary-900 mb-4">
+      <h1 class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">
         Choose Your <span class="text-transparent bg-clip-text bg-gradient-accent">Perfect Plan</span>
       </h1>
-      <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
+      <p class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_MUTED %> max-w-2xl mx-auto">
         Start free and scale as you grow. No hidden fees, no surprises. Switch plans anytime.
       </p>
     </div>
 
     <% if @subscription&.trialing? %>
       <div class="mb-8 animate-slide-up">
-        <div class="alert-info max-w-2xl mx-auto">
+        <div class="<%= DesignSystemHelper::ALERT_INFO %> max-w-2xl mx-auto">
           <div class="flex items-center justify-center space-x-3">
             <svg class="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -44,14 +44,14 @@
             </div>
           <% end %>
           
-          <div class="card h-full <%= 'ring-2 ring-primary-500 shadow-xl' if plan == @current_plan %> hover:shadow-xl transition-all duration-300">
-            <div class="card-body">
+          <div class="<%= DesignSystemHelper::CARD %> h-full <%= 'ring-2 ring-accent-400 shadow-xl' if plan == @current_plan %> hover:shadow-xl transition-all duration-300">
+            <div class="<%= DesignSystemHelper::CARD_BODY %>">
               <div class="text-center">
-                <h2 class="text-2xl font-bold text-primary-900 mb-2">
+                <h2 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-2">
                   <%= plan.name %>
                 </h2>
                 <% if plan == @current_plan %>
-                  <div class="badge-success mb-4">
+                  <div class="<%= DesignSystemHelper::BADGE_SUCCESS %> mb-4">
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                     </svg>
@@ -61,18 +61,18 @@
                 
                 <div class="mb-8">
                   <% if plan.free? %>
-                    <div class="text-5xl font-bold text-primary-900">Free</div>
-                    <div class="text-neutral-500 mt-2">Forever</div>
+                    <div class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">Free</div>
+                    <div class="<%= DesignSystemHelper::TEXT_MUTED %> mt-2">Forever</div>
                   <% else %>
                     <div class="flex items-baseline justify-center">
-                      <span class="text-2xl font-medium text-neutral-600">$</span>
-                      <span class="text-6xl font-bold text-primary-900"><%= plan.amount / 100 %></span>
-                      <span class="text-lg font-medium text-neutral-600 ml-2">/<%= plan.interval %></span>
+                      <span class="text-2xl font-medium <%= DesignSystemHelper::TEXT_MUTED %>">$</span>
+                      <span class="text-6xl font-bold <%= DesignSystemHelper::TEXT_PRIMARY %>"><%= plan.amount / 100 %></span>
+                      <span class="text-lg font-medium <%= DesignSystemHelper::TEXT_MUTED %> ml-2">/<%= plan.interval %></span>
                     </div>
                   <% end %>
                   
                   <% if plan.trial_days > 0 %>
-                    <div class="mt-3 text-sm text-accent-700 font-medium">
+                    <div class="mt-3 <%= DesignSystemHelper::TEXT_CAPTION %> <%= DesignSystemHelper::TEXT_ACCENT %> font-medium">
                       <%= plan.trial_days %>-day free trial included
                     </div>
                   <% end %>
@@ -80,27 +80,27 @@
                 
                 <% if user_signed_in? %>
                   <% if plan == @current_plan %>
-                    <button disabled class="btn-secondary w-full opacity-50 cursor-not-allowed">
+                    <button disabled class="<%= DesignSystemHelper::BTN_SECONDARY %> w-full opacity-50 cursor-not-allowed">
                       Current Plan
                     </button>
                   <% elsif @subscription&.trial_expired? && !plan.free? %>
                     <%= link_to "Subscribe Now", new_subscription_path(plan_id: plan.id), 
-                        class: "btn-primary w-full" %>
+                        class: "#{DesignSystemHelper::BTN_PRIMARY} w-full" %>
                   <% elsif plan.free? && @current_plan && !@current_plan.free? %>
                     <%= button_to "Downgrade to Free", cancel_subscription_path(@subscription), 
                         method: :post, 
                         data: { confirm: "Are you sure you want to downgrade to the free plan?" },
-                        class: "btn-danger w-full" %>
+                        class: "#{DesignSystemHelper::BTN_DANGER} w-full" %>
                   <% elsif !plan.free? %>
                     <%= link_to "Upgrade Now", new_subscription_path(plan_id: plan.id), 
-                        class: "btn-accent w-full" %>
+                        class: "#{DesignSystemHelper::BTN_ACCENT} w-full" %>
                   <% else %>
-                    <button disabled class="btn-secondary w-full opacity-50 cursor-not-allowed">
+                    <button disabled class="<%= DesignSystemHelper::BTN_SECONDARY %> w-full opacity-50 cursor-not-allowed">
                       Not Available
                     </button>
                   <% end %>
                 <% else %>
-                  <%= link_to new_user_registration_path, class: "btn-primary w-full group" do %>
+                  <%= link_to new_user_registration_path, class: "#{DesignSystemHelper::BTN_PRIMARY} w-full group" do %>
                     <span>Get Started</span>
                     <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -110,19 +110,19 @@
               </div>
             </div>
             
-            <div class="divider mx-6"></div>
+            <div class="<%= DesignSystemHelper::DIVIDER %> mx-6"></div>
             
             <div class="px-6 pb-8">
-              <h3 class="text-sm font-semibold text-neutral-900 uppercase tracking-wider mb-4">
+              <h3 class="<%= DesignSystemHelper::TEXT_CAPTION %> font-semibold <%= DesignSystemHelper::TEXT_PRIMARY %> uppercase tracking-wider mb-4">
                 Everything included
               </h3>
               <ul class="space-y-3">
                 <% plan.features.each do |feature| %>
                   <li class="flex items-start">
-                    <svg class="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-5 h-5 <%= DesignSystemHelper::TEXT_SUCCESS %> mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                     </svg>
-                    <span class="text-neutral-700"><%= feature %></span>
+                    <span class="<%= DesignSystemHelper::TEXT_SECONDARY %>"><%= feature %></span>
                   </li>
                 <% end %>
               </ul>
@@ -133,42 +133,42 @@
     </div>
     
     <div class="mt-16 text-center">
-      <h3 class="text-2xl font-bold text-primary-900 mb-4">
+      <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">
         Still have questions?
       </h3>
-      <p class="text-neutral-600 mb-6">
+      <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %> mb-6">
         Our team is here to help you choose the right plan for your needs.
       </p>
-      <%= link_to "Contact Sales", "#", class: "btn-ghost" %>
+      <%= link_to "Contact Sales", "#", class: DesignSystemHelper::BTN_GHOST %>
     </div>
   </div>
 </section>
 
 <!-- Trust Section -->
-<section class="section bg-white">
-  <div class="container-wide">
+<section class="<%= DesignSystemHelper::SECTION %>">
+  <div class="<%= DesignSystemHelper::CONTAINER_WIDE %>">
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-primary-900 mb-4">
+      <h2 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">
         Trusted by teams worldwide
       </h2>
     </div>
     
     <div class="grid md:grid-cols-4 gap-8 text-center">
       <div>
-        <div class="text-4xl font-bold text-primary-600 mb-2">99.9%</div>
-        <div class="text-neutral-600">Uptime guarantee</div>
+        <div class="text-4xl font-bold <%= DesignSystemHelper::TEXT_ACCENT %> mb-2">99.9%</div>
+        <div class="<%= DesignSystemHelper::TEXT_MUTED %>">Uptime guarantee</div>
       </div>
       <div>
-        <div class="text-4xl font-bold text-primary-600 mb-2">24/7</div>
-        <div class="text-neutral-600">Customer support</div>
+        <div class="text-4xl font-bold <%= DesignSystemHelper::TEXT_ACCENT %> mb-2">24/7</div>
+        <div class="<%= DesignSystemHelper::TEXT_MUTED %>">Customer support</div>
       </div>
       <div>
-        <div class="text-4xl font-bold text-primary-600 mb-2">256-bit</div>
-        <div class="text-neutral-600">SSL encryption</div>
+        <div class="text-4xl font-bold <%= DesignSystemHelper::TEXT_ACCENT %> mb-2">256-bit</div>
+        <div class="<%= DesignSystemHelper::TEXT_MUTED %>">SSL encryption</div>
       </div>
       <div>
-        <div class="text-4xl font-bold text-primary-600 mb-2">GDPR</div>
-        <div class="text-neutral-600">Compliant</div>
+        <div class="text-4xl font-bold <%= DesignSystemHelper::TEXT_ACCENT %> mb-2">GDPR</div>
+        <div class="<%= DesignSystemHelper::TEXT_MUTED %>">Compliant</div>
       </div>
     </div>
   </div>

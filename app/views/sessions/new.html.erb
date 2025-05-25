@@ -1,51 +1,51 @@
-<div class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 flex items-center justify-center px-4">
+<div class="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 flex items-center justify-center px-4">
   <div class="max-w-md w-full animate-fade-in">
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center mb-6">
-        <div class="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg">
-          <span class="text-white font-bold text-2xl">H</span>
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center mb-8">
+        <div class="w-20 h-20 bg-gradient-accent rounded-3xl flex items-center justify-center shadow-2xl">
+          <span class="text-white font-bold text-3xl">H</span>
         </div>
       </div>
-      <h2 class="text-4xl font-bold text-primary-900 mb-3">Welcome back</h2>
-      <p class="text-lg text-neutral-600">Sign in to continue to Hub</p>
+      <h2 class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Welcome back</h2>
+      <p class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_SECONDARY %>">Sign in to continue to Hub</p>
     </div>
     
-    <div class="card shadow-xl">
-      <div class="card-body">
-        <%= form_with url: sessions_path, method: :post, local: true, class: "space-y-6" do |form| %>
+    <div class="<%= DesignSystemHelper::CARD %> shadow-2xl">
+      <div class="<%= DesignSystemHelper::CARD_BODY %>">
+        <%= form_with url: sessions_path, method: :post, local: true, class: "space-y-8" do |form| %>
           <div>
-            <%= form.label :email, "Email address", class: "form-label" %>
+            <%= form.label :email, "Email address", class: DesignSystemHelper::FORM_LABEL %>
             <%= form.email_field :email, 
                 required: true, 
                 placeholder: "you@example.com", 
                 autofocus: true,
-                class: "form-input text-lg" %>
+                class: DesignSystemHelper::FORM_INPUT %>
           </div>
           
           <div>
-            <%= form.submit "Send Magic Link", class: "btn-primary btn-lg w-full group" %>
+            <%= form.submit "Send Magic Link", class: "#{DesignSystemHelper::BTN_ACCENT} #{DesignSystemHelper::BTN_XL} w-full group" %>
           </div>
           
           <div class="relative">
             <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-neutral-200"></div>
+              <div class="w-full border-t border-primary-700/50"></div>
             </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="px-4 bg-white text-neutral-500">Or continue with</span>
+            <div class="relative flex justify-center">
+              <span class="px-6 bg-primary-800 <%= DesignSystemHelper::TEXT_BODY_SM %> <%= DesignSystemHelper::TEXT_MUTED %>">Or continue with</span>
             </div>
           </div>
           
-          <div class="text-center text-sm text-neutral-600">
+          <div class="text-center <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">
             We'll send you a secure sign-in link via email
           </div>
         <% end %>
       </div>
     </div>
     
-    <div class="mt-8 text-center">
-      <p class="text-neutral-600">
+    <div class="mt-10 text-center">
+      <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">
         Don't have an account? 
-        <%= link_to "Create one", new_user_registration_path, class: "link font-medium" %>
+        <%= link_to "Create one", new_user_registration_path, class: DesignSystemHelper::LINK + " font-semibold" %>
       </p>
     </div>
   </div>

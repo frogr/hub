@@ -1,56 +1,56 @@
-<section class="section">
-  <div class="container-wide">
+<section class="<%= DesignSystemHelper::SECTION %>">
+  <div class="<%= DesignSystemHelper::CONTAINER_WIDE %>">
     <div class="mb-8">
-      <h1 class="text-4xl font-bold text-primary-900 mb-2">Subscription Management</h1>
-      <p class="text-lg text-neutral-600">Manage your plan and billing details</p>
+      <h1 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-2">Subscription Management</h1>
+      <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">Manage your plan and billing details</p>
     </div>
   
     <% if @current_subscription %>
-      <div class="card shadow-lg mb-8">
-        <div class="card-header">
+      <div class="<%= DesignSystemHelper::CARD %> shadow-lg mb-8">
+        <div class="<%= DesignSystemHelper::CARD_HEADER %>">
           <div class="flex items-center justify-between">
-            <h3 class="text-2xl font-bold text-primary-900">
+            <h3 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
               Current Subscription
             </h3>
             <% if @current_subscription.trialing? %>
-              <span class="badge-warning">
+              <span class="<%= DesignSystemHelper::BADGE_WARNING %>">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
                 </svg>
                 Trial: <%= @current_subscription.days_remaining_in_trial %> days left
               </span>
             <% elsif @current_subscription.active? %>
-              <span class="badge-success">
+              <span class="<%= DesignSystemHelper::BADGE_SUCCESS %>">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                 </svg>
                 Active
               </span>
             <% elsif @current_subscription.trial_expired? %>
-              <span class="badge bg-error/10 text-error">
+              <span class="<%= DesignSystemHelper::BADGE_BASE %> bg-red-800/50 <%= DesignSystemHelper::TEXT_ERROR %> border border-red-600/50">
                 Trial Expired
               </span>
             <% else %>
-              <span class="badge-primary">
+              <span class="<%= DesignSystemHelper::BADGE_PRIMARY %>">
                 <%= @current_subscription.status.humanize %>
               </span>
             <% end %>
           </div>
         </div>
-        <div class="card-body">
+        <div class="<%= DesignSystemHelper::CARD_BODY %>">
           <div class="grid md:grid-cols-2 gap-8">
             <div>
-              <h4 class="font-semibold text-neutral-700 mb-4">Plan Details</h4>
+              <h4 class="font-semibold <%= DesignSystemHelper::TEXT_SECONDARY %> mb-4">Plan Details</h4>
               <dl class="space-y-4">
                 <div>
-                  <dt class="text-sm font-medium text-neutral-500">Plan Name</dt>
-                  <dd class="mt-1 text-lg font-semibold text-primary-900">
+                  <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Plan Name</dt>
+                  <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> font-semibold <%= DesignSystemHelper::TEXT_PRIMARY %>">
                     <%= @current_subscription.plan.name %>
                   </dd>
                 </div>
                 <div>
-                  <dt class="text-sm font-medium text-neutral-500">Price</dt>
-                  <dd class="mt-1 text-lg font-semibold text-primary-900">
+                  <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Price</dt>
+                  <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> font-semibold <%= DesignSystemHelper::TEXT_PRIMARY %>">
                     <%= @current_subscription.plan.display_price %>
                   </dd>
                 </div>
@@ -58,18 +58,18 @@
             </div>
             
             <div>
-              <h4 class="font-semibold text-neutral-700 mb-4">Billing Information</h4>
+              <h4 class="font-semibold <%= DesignSystemHelper::TEXT_SECONDARY %> mb-4">Billing Information</h4>
               <dl class="space-y-4">
                 <% if @current_subscription.current_period_end %>
                   <div>
-                    <dt class="text-sm font-medium text-neutral-500">
+                    <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">
                       <% if @current_subscription.cancel_at_period_end? %>
                         Subscription Ends
                       <% else %>
                         Next Billing Date
                       <% end %>
                     </dt>
-                    <dd class="mt-1 text-lg font-semibold text-primary-900">
+                    <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> font-semibold <%= DesignSystemHelper::TEXT_PRIMARY %>">
                       <%= @current_subscription.current_period_end.strftime("%B %d, %Y") %>
                     </dd>
                   </div>
@@ -77,8 +77,8 @@
                 
                 <% if @current_subscription.trial_ends_at %>
                   <div>
-                    <dt class="text-sm font-medium text-neutral-500">Trial Ends</dt>
-                    <dd class="mt-1 text-lg font-semibold text-primary-900">
+                    <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Trial Ends</dt>
+                    <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> font-semibold <%= DesignSystemHelper::TEXT_PRIMARY %>">
                       <%= @current_subscription.trial_ends_at.strftime("%B %d, %Y at %l:%M %p") %>
                     </dd>
                   </div>
@@ -91,14 +91,14 @@
     
       <div class="flex flex-wrap gap-4">
         <% if @current_subscription.trialing? || @current_subscription.trial_expired? %>
-          <%= link_to new_subscription_path(plan_id: @current_subscription.plan_id), class: "btn-primary" do %>
+          <%= link_to new_subscription_path(plan_id: @current_subscription.plan_id), class: DesignSystemHelper::BTN_PRIMARY do %>
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             Subscribe Now
           <% end %>
         <% elsif @current_subscription.active? && !@current_subscription.cancel_at_period_end? %>
-          <%= link_to pricing_path, class: "btn-secondary" do %>
+          <%= link_to pricing_path, class: DesignSystemHelper::BTN_SECONDARY do %>
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
             </svg>
@@ -106,7 +106,7 @@
           <% end %>
           <%= button_to cancel_subscription_path(@current_subscription), 
               method: :post, 
-              class: "btn-danger", 
+              class: DesignSystemHelper::BTN_DANGER, 
               data: { confirm: "Are you sure you want to cancel your subscription? It will remain active until #{@current_subscription.current_period_end.strftime('%B %d, %Y')}." } do %>
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -114,7 +114,7 @@
             Cancel Subscription
           <% end %>
         <% elsif @current_subscription.cancel_at_period_end? %>
-          <div class="alert-warning">
+          <div class="<%= DesignSystemHelper::ALERT_WARNING %>">
             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
             </svg>
@@ -123,7 +123,7 @@
         <% end %>
         
         <% if @current_subscription.stripe_subscription_id && ENV['STRIPE_CUSTOMER_PORTAL_ENABLED'] == 'true' %>
-          <%= link_to "#", class: "btn-ghost", title: "Stripe Customer Portal" do %>
+          <%= link_to "#", class: DesignSystemHelper::BTN_GHOST, title: "Stripe Customer Portal" do %>
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
             </svg>
@@ -132,16 +132,16 @@
         <% end %>
       </div>
     <% else %>
-      <div class="card bg-gradient-to-br from-primary-50 to-accent-50 border-primary-200">
-        <div class="card-body text-center py-16">
-          <div class="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="<%= DesignSystemHelper::CARD %>">
+        <div class="<%= DesignSystemHelper::CARD_BODY %> text-center py-16">
+          <div class="w-20 h-20 bg-primary-700/30 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 <%= DesignSystemHelper::TEXT_ACCENT %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-primary-900 mb-3">No Active Subscription</h3>
-          <p class="text-lg text-neutral-600 mb-6">Choose a plan to unlock all features and get started.</p>
-          <%= link_to pricing_path, class: "btn-primary btn-lg" do %>
+          <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-3">No Active Subscription</h3>
+          <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %> mb-6">Choose a plan to unlock all features and get started.</p>
+          <%= link_to pricing_path, class: "#{DesignSystemHelper::BTN_PRIMARY} #{DesignSystemHelper::BTN_LG}" do %>
             View Available Plans
             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -152,7 +152,7 @@
     <% end %>
   
     <% if !ENV['STRIPE_PUBLISHABLE_KEY'] || !ENV['STRIPE_SECRET_KEY'] %>
-      <div class="mt-8 alert-warning">
+      <div class="mt-8 <%= DesignSystemHelper::ALERT_WARNING %>">
         <div class="flex">
           <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
@@ -163,10 +163,10 @@
               To enable subscription purchases, configure your Stripe API keys:
             </p>
             <ol class="list-decimal list-inside space-y-2">
-              <li>Sign up for a <a href="https://stripe.com" target="_blank" class="link">Stripe account</a></li>
-              <li>Get your API keys from the <a href="https://dashboard.stripe.com/apikeys" target="_blank" class="link">Stripe Dashboard</a></li>
+              <li>Sign up for a <a href="https://stripe.com" target="_blank" class="<%= DesignSystemHelper::LINK %>">Stripe account</a></li>
+              <li>Get your API keys from the <a href="https://dashboard.stripe.com/apikeys" target="_blank" class="<%= DesignSystemHelper::LINK %>">Stripe Dashboard</a></li>
               <li>Add these environment variables:
-                <pre class="mt-2 bg-warning/20 p-3 rounded-lg text-sm font-mono overflow-x-auto">STRIPE_PUBLISHABLE_KEY=pk_test_...
+                <pre class="mt-2 bg-yellow-800/20 p-3 rounded-lg <%= DesignSystemHelper::TEXT_CAPTION %> <%= DesignSystemHelper::TEXT_WARNING %> font-mono overflow-x-auto">STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_... (optional)</pre>
               </li>

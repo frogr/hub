@@ -1,4 +1,19 @@
-<div>
-  <h1 class="font-bold text-4xl">Checkout#cancel</h1>
-  <p>Find me in app/views/checkout/cancel.html.erb</p>
-</div>
+<section class="<%= DesignSystemHelper::SECTION %>">
+  <div class="<%= DesignSystemHelper::CONTAINER_NARROW %> text-center">
+    <div class="<%= DesignSystemHelper::CARD %>">
+      <div class="<%= DesignSystemHelper::CARD_BODY %> py-16">
+        <div class="w-20 h-20 bg-red-800/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 <%= DesignSystemHelper::TEXT_ERROR %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+        <h1 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Payment Cancelled</h1>
+        <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %> mb-8">Your payment was cancelled. No charges were made.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <%= link_to "Try Again", pricing_path, class: DesignSystemHelper::BTN_PRIMARY %>
+          <%= link_to "Go to Dashboard", authenticated_dashboard_path, class: DesignSystemHelper::BTN_GHOST %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
