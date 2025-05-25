@@ -5,6 +5,19 @@ Rails.application.routes.draw do
   get "sign_in/:token", to: "sessions#show", as: :sign_in
 
   resources :dashboard, only: [ :index ]
+
+  resources :subscriptions, only: [ :index, :new, :create ] do
+    member do
+      post :cancel
+    end
+  end
+
+  namespace :checkout do
+    get :success
+    get :cancel
+  end
+
+  post "webhooks/stripe", to: "webhooks#stripe"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

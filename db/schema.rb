@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_082505) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_25_031541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,6 +29,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_082505) do
     t.index ["token"], name: "index_passwordless_sessions_on_token", unique: true
   end
 
+  create_table "plans", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "stripe_price_id"
+    t.integer "amount", null: false
+    t.string "currency", default: "usd", null: false
+    t.string "interval", null: false
+    t.text "features"
+    t.integer "trial_days", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_price_id"], name: "index_plans_on_stripe_price_id", unique: true
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "stripe_subscription_id"
+    t.string "status", default: "active", null: false
+    t.datetime "current_period_end"
+    t.boolean "cancel_at_period_end", default: false
+    t.string "stripe_customer_id"
+    t.bigint "plan_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_id"], name: "index_subscriptions_on_plan_id"
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id", unique: true
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -38,7 +66,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_082505) do
     t.boolean "passwordless_login_enabled", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_customer_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
   end
+
+  add_foreign_key "subscriptions", "plans"
+  add_foreign_key "subscriptions", "users"
 end

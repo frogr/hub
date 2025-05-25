@@ -1,0 +1,57 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Choose Your Plan</h1>
+  
+  <% if @current_subscription %>
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+      <p class="text-blue-800">
+        You are currently subscribed to the <strong><%= @current_subscription.plan.name %></strong> plan.
+        <% if @current_subscription.cancel_at_period_end? %>
+          Your subscription will end on <%= @current_subscription.current_period_end.strftime("%B %d, %Y") %>.
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+  
+  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <% @plans.each do |plan| %>
+      <div class="relative border-2 border-gray-200 rounded-lg p-8 hover:border-indigo-500 transition-colors <%= 'ring-2 ring-indigo-500' if @current_subscription&.plan == plan %>">
+        <% if @current_subscription&.plan == plan %>
+          <span class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold">Current Plan</span>
+        <% end %>
+        
+        <h3 class="text-xl font-semibold text-gray-900 mb-2"><%= plan.name %></h3>
+        <p class="text-3xl font-bold text-gray-900 mb-4">
+          <%= plan.display_price %>
+          <% if plan.trial_days > 0 %>
+            <span class="text-sm font-normal text-gray-500">with <%= plan.trial_days %>-day trial</span>
+          <% end %>
+        </p>
+        
+        <ul class="space-y-3 mb-8">
+          <% plan.features.each do |feature| %>
+            <li class="flex items-start">
+              <svg class="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm text-gray-600"><%= feature %></span>
+            </li>
+          <% end %>
+        </ul>
+        
+        <% if plan.free? %>
+          <% if @current_subscription&.plan == plan %>
+            <button class="w-full bg-gray-100 text-gray-500 py-2 px-4 rounded-md font-semibold cursor-not-allowed" disabled>
+              Current Plan
+            </button>
+          <% else %>
+            <%= link_to "Select Free Plan", new_subscription_path(plan_id: plan.id), class: "block w-full bg-indigo-600 text-white text-center py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition-colors" %>
+          <% end %>
+        <% elsif @current_subscription&.plan == plan && !@current_subscription.cancel_at_period_end? %>
+          <%= button_to "Cancel Subscription", cancel_subscription_path(@current_subscription), method: :post, class: "w-full bg-red-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-red-700 transition-colors", data: { confirm: "Are you sure you want to cancel your subscription?" } %>
+        <% else %>
+          <%= link_to "Select Plan", new_subscription_path(plan_id: plan.id), class: "block w-full bg-indigo-600 text-white text-center py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition-colors" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

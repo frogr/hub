@@ -26,6 +26,9 @@ gem "jbuilder"
 gem "devise"
 gem "passwordless"
 
+# Payment processing
+gem "stripe", "~> 13.0"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -73,6 +76,9 @@ group :development, :test do
 
   # Load environment variables from .env file
   gem "dotenv-rails"
+
+  # Rails controller testing for RSpec
+  gem "rails-controller-testing"
 end
 
 group :development do

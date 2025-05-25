@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :passwordless_sessions, as: :authenticatable, dependent: :destroy
+  has_one :subscription, dependent: :destroy
 
   def passwordless_with(user_agent:, remote_addr:)
     passwordless_sessions.create!(
@@ -30,6 +31,26 @@ class User < ApplicationRecord
     else
       :none
     end
+  end
+
+  def has_active_subscription?
+    subscription&.active_or_trialing?
+  end
+
+  def subscribed_to?(plan)
+    subscription&.plan == plan && has_active_subscription?
+  end
+
+  def current_plan
+    subscription&.plan
+  end
+
+  def stripe_customer
+    StripeCustomerService.new(self).find_or_create
+  end
+
+  def create_or_update_stripe_customer
+    StripeCustomerService.new(self).find_or_create
   end
 
   private

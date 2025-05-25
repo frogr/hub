@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
         <div class="flex items-center space-x-4">
           <span class="text-gray-600">Welcome, <%= current_user.email %></span>
-          <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" %>
+          <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, class: "bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" %>
         </div>
       </div>
     </div>
@@ -24,6 +24,25 @@
         <div>
           <label class="block text-sm font-medium text-gray-700">Member Since</label>
           <p class="mt-1 text-sm text-gray-900"><%= current_user.created_at.strftime("%B %d, %Y") %></p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Subscription Plan</label>
+          <p class="mt-1 text-sm text-gray-900">
+            <% if current_user.subscription %>
+              <%= current_user.subscription.plan.name %>
+              <% if current_user.subscription.cancel_at_period_end? %>
+                (Canceling <%= current_user.subscription.current_period_end.strftime("%B %d, %Y") %>)
+              <% end %>
+            <% else %>
+              No active subscription
+            <% end %>
+          </p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Manage Subscription</label>
+          <p class="mt-1">
+            <%= link_to "View Plans", subscriptions_path, class: "text-indigo-600 hover:text-indigo-500 text-sm" %>
+          </p>
         </div>
       </div>
     </div>
