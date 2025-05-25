@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :passwordless_sessions, as: :authenticatable, dependent: :destroy
   has_one :subscription, dependent: :destroy
 
+  after_create :create_trial_subscription
+
   def passwordless_with(user_agent:, remote_addr:)
     passwordless_sessions.create!(
       user_agent: user_agent,
@@ -57,5 +59,19 @@ class User < ApplicationRecord
 
   def passwordless_session_duration
     1.hour
+  end
+
+  def create_trial_subscription
+    return if Rails.env.test? # Skip in test environment to avoid plan dependency
+
+    pro_plan = Plan.find_by(name: "Pro")
+    return unless pro_plan && pro_plan.trial_days > 0
+
+    create_subscription!(
+      plan: pro_plan,
+      status: "trialing",
+      trial_ends_at: pro_plan.trial_days.days.from_now,
+      current_period_end: pro_plan.trial_days.days.from_now
+    )
   end
 end

@@ -42,6 +42,7 @@ RSpec.describe SubscriptionService, type: :service do
     context 'when plan has stripe_price_id' do
       before do
         allow_any_instance_of(StripeCustomerService).to receive(:find_or_create).and_return(stripe_customer)
+        allow(service).to receive(:stripe_configured?).and_return(true)
       end
 
       context 'without trial period' do
@@ -99,6 +100,7 @@ RSpec.describe SubscriptionService, type: :service do
 
       it 'returns nil when customer creation fails' do
         allow_any_instance_of(StripeCustomerService).to receive(:find_or_create).and_return(nil)
+        allow(service).to receive(:stripe_configured?).and_return(true)
 
         result = service.create_checkout_session(success_url: success_url, cancel_url: cancel_url)
         expect(result).to be_nil

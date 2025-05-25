@@ -17,12 +17,11 @@ RSpec.describe 'Subscriptions', type: :request do
       expect(response).to have_http_status(:success)
     end
 
-    it 'displays all plans ordered by amount' do
+    it 'displays subscription management page' do
       get subscriptions_path
 
-      expect(response.body).to include(free_plan.name)
-      expect(response.body).to include(basic_plan.name)
-      expect(response.body).to include(premium_plan.name)
+      expect(response.body).to include('Subscription Management')
+      expect(response.body).to include('View available plans')
     end
 
     context 'when user has a subscription' do

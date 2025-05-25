@@ -17,10 +17,25 @@ class Subscription < ApplicationRecord
   scope :active_or_trialing, -> { where(status: [ :active, :trialing ]) }
 
   def active_or_trialing?
-    active? || trialing?
+    if trialing? && trial_ends_at.present?
+      trial_ends_at > Time.current && (active? || trialing?)
+    else
+      active? || trialing?
+    end
   end
 
   def cancelled?
     canceled? || cancel_at_period_end?
+  end
+
+  def trial_expired?
+    trialing? && trial_ends_at.present? && trial_ends_at <= Time.current
+  end
+
+  def days_remaining_in_trial
+    return 0 unless trialing? && trial_ends_at.present?
+
+    days = ((trial_ends_at - Time.current) / 1.day).ceil
+    days.positive? ? days : 0
   end
 end

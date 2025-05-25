@@ -7,6 +7,7 @@ class SubscriptionService
   end
 
   def create_checkout_session(success_url:, cancel_url:)
+    return nil unless stripe_configured?
     return nil unless plan && plan.stripe_price_id.present?
 
     customer = ensure_stripe_customer
@@ -90,6 +91,10 @@ class SubscriptionService
   end
 
   private
+
+  def stripe_configured?
+    ENV["STRIPE_PUBLISHABLE_KEY"].present? && ENV["STRIPE_SECRET_KEY"].present?
+  end
 
   def ensure_stripe_customer
     StripeCustomerService.new(user).find_or_create
