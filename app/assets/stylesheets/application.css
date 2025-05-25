@@ -10,8 +10,3 @@
  */
 
 @import "builds/tailwind.css";
-
-/* Test CSS rule */
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-}

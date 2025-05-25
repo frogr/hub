@@ -1,89 +1,89 @@
 <!-- Hero Section -->
-<section class="hero bg-gradient-to-br from-primary-50 via-white to-accent-50">
-  <div class="hero-content">
-    <div class="inline-flex items-center justify-center mb-6">
-      <div class="w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center shadow-xl animate-scale-in">
-        <span class="text-white font-bold text-3xl">H</span>
+<section class="<%= DesignSystemHelper::HERO %> bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900">
+  <div class="<%= DesignSystemHelper::HERO_CONTENT %>">
+    <div class="inline-flex items-center justify-center mb-8">
+      <div class="w-24 h-24 bg-gradient-accent rounded-3xl flex items-center justify-center shadow-2xl animate-scale-in">
+        <span class="text-white font-bold text-4xl">H</span>
       </div>
     </div>
-    <h1 class="hero-title">
-      Welcome to <span class="text-transparent bg-clip-text bg-gradient-primary">Hub</span>
+    <h1 class="<%= DesignSystemHelper::HERO_TITLE %>">
+      Welcome to <span class="text-transparent bg-clip-text bg-gradient-accent">Hub</span>
     </h1>
-    <p class="hero-subtitle max-w-2xl mx-auto">
+    <p class="<%= DesignSystemHelper::HERO_SUBTITLE %>">
       Your central command for seamless workflow management. Built for modern teams who value simplicity and power.
     </p>
     
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <%= link_to new_user_registration_path, class: "btn-primary btn-lg group" do %>
+    <div class="flex flex-col sm:flex-row gap-6 justify-center">
+      <%= link_to new_user_registration_path, class: btn_accent(:xl) + " group" do %>
         <span>Start Free Trial</span>
-        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
         </svg>
       <% end %>
-      <%= link_to "Watch Demo", "#", class: "btn-secondary btn-lg" %>
+      <%= link_to "Watch Demo", "#", class: btn_secondary(:xl) %>
     </div>
     
-    <div class="mt-8 text-sm text-neutral-500">
+    <div class="mt-10 <%= DesignSystemHelper::TEXT_BODY_SM %> <%= DesignSystemHelper::TEXT_MUTED %>">
       No credit card required · 14-day free trial · Cancel anytime
     </div>
   </div>
   
   <!-- Decorative gradient blur -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute -top-32 -right-32 w-96 h-96 bg-primary-200 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-    <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-accent-200 rounded-full filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute -top-32 -right-32 w-96 h-96 bg-accent-600 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-primary-600 rounded-full filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
   </div>
 </section>
 
 <!-- Features Section -->
-<section class="section bg-white">
-  <div class="container-wide">
-    <div class="text-center mb-12">
-      <h2 class="section-title">Everything you need, nothing you don't</h2>
-      <p class="section-subtitle">Powerful features designed with simplicity in mind</p>
+<section class="<%= DesignSystemHelper::SECTION %> bg-primary-900">
+  <div class="<%= DesignSystemHelper::CONTAINER_WIDE %>">
+    <div class="text-center mb-16">
+      <h2 class="<%= DesignSystemHelper::SECTION_TITLE %>">Everything you need, nothing you don't</h2>
+      <p class="<%= DesignSystemHelper::SECTION_SUBTITLE %>">Powerful features designed with simplicity in mind</p>
     </div>
     
     <div class="grid md:grid-cols-3 gap-8">
       <!-- Feature 1 -->
-      <div class="card group hover:scale-[1.02] transition-transform duration-300">
-        <div class="card-body text-center">
-          <div class="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="<%= DesignSystemHelper::CARD %> group hover:scale-[1.02] transition-transform duration-300">
+        <div class="<%= DesignSystemHelper::CARD_BODY %> text-center">
+          <div class="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-primary-900 mb-3">Lightning Fast</h3>
-          <p class="text-neutral-600 leading-relaxed">
+          <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Lightning Fast</h3>
+          <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">
             Built for speed with edge computing and optimized infrastructure. Your data, delivered instantly.
           </p>
         </div>
       </div>
 
       <!-- Feature 2 -->
-      <div class="card group hover:scale-[1.02] transition-transform duration-300">
-        <div class="card-body text-center">
-          <div class="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="<%= DesignSystemHelper::CARD %> group hover:scale-[1.02] transition-transform duration-300">
+        <div class="<%= DesignSystemHelper::CARD_BODY %> text-center">
+          <div class="w-20 h-20 bg-gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-primary-900 mb-3">Enterprise Security</h3>
-          <p class="text-neutral-600 leading-relaxed">
+          <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Enterprise Security</h3>
+          <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">
             Bank-level encryption and compliance. Your data is protected with industry-leading security standards.
           </p>
         </div>
       </div>
 
       <!-- Feature 3 -->
-      <div class="card group hover:scale-[1.02] transition-transform duration-300">
-        <div class="card-body text-center">
-          <div class="w-16 h-16 bg-gold-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="<%= DesignSystemHelper::CARD %> group hover:scale-[1.02] transition-transform duration-300">
+        <div class="<%= DesignSystemHelper::CARD_BODY %> text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-gold-600 to-gold-800 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-primary-900 mb-3">Always in Sync</h3>
-          <p class="text-neutral-600 leading-relaxed">
+          <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Always in Sync</h3>
+          <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">
             Real-time collaboration across all devices. Work seamlessly whether you're at home or in the office.
           </p>
         </div>
@@ -93,24 +93,24 @@
 </section>
 
 <!-- Stats Section -->
-<section class="section bg-gradient-to-br from-primary-900 to-primary-700 text-white relative overflow-hidden">
-  <div class="container-wide relative z-10">
+<section class="<%= DesignSystemHelper::SECTION %> bg-gradient-to-br from-primary-800 to-accent-900 relative overflow-hidden">
+  <div class="<%= DesignSystemHelper::CONTAINER_WIDE %> relative z-10">
     <div class="grid md:grid-cols-4 gap-8 text-center">
       <div>
-        <div class="text-5xl font-bold mb-2">99.9%</div>
-        <div class="text-primary-200">Uptime SLA</div>
+        <div class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_ACCENT %> mb-4">99.9%</div>
+        <div class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">Uptime SLA</div>
       </div>
       <div>
-        <div class="text-5xl font-bold mb-2">50K+</div>
-        <div class="text-primary-200">Active Users</div>
+        <div class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_ACCENT %> mb-4">50K+</div>
+        <div class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">Active Users</div>
       </div>
       <div>
-        <div class="text-5xl font-bold mb-2">24/7</div>
-        <div class="text-primary-200">Support</div>
+        <div class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_ACCENT %> mb-4">24/7</div>
+        <div class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">Support</div>
       </div>
       <div>
-        <div class="text-5xl font-bold mb-2">150+</div>
-        <div class="text-primary-200">Countries</div>
+        <div class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_ACCENT %> mb-4">150+</div>
+        <div class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">Countries</div>
       </div>
     </div>
   </div>
@@ -122,42 +122,42 @@
 </section>
 
 <!-- CTA Section -->
-<section class="section bg-neutral-50">
-  <div class="container-narrow text-center">
-    <div class="card shadow-2xl">
-      <div class="card-body py-12 md:py-16">
-        <h2 class="text-4xl md:text-5xl font-bold text-primary-900 mb-6">
+<section class="<%= DesignSystemHelper::SECTION %> bg-primary-900">
+  <div class="<%= DesignSystemHelper::CONTAINER_NARROW %> text-center">
+    <div class="<%= DesignSystemHelper::CARD %> bg-gradient-to-br from-primary-800 to-primary-700 border-primary-600">
+      <div class="<%= DesignSystemHelper::CARD_BODY %> py-16 md:py-20">
+        <h2 class="<%= DesignSystemHelper::TEXT_DISPLAY %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-8">
           Ready to transform your workflow?
         </h2>
-        <p class="text-xl text-neutral-600 mb-8 max-w-2xl mx-auto">
+        <p class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_SECONDARY %> mb-12 max-w-2xl mx-auto">
           Join thousands of teams who've already made the switch. Start your free trial today and see the difference.
         </p>
         
-        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <%= link_to new_user_registration_path, class: "btn-accent btn-xl group" do %>
+        <div class="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+          <%= link_to new_user_registration_path, class: btn_accent(:xl) + " group" do %>
             <span>Get Started Free</span>
-            <svg class="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
             </svg>
           <% end %>
-          <%= link_to "Talk to Sales", "#", class: "btn-secondary btn-xl" %>
+          <%= link_to "Talk to Sales", "#", class: btn_secondary(:xl) %>
         </div>
         
-        <div class="flex flex-wrap justify-center gap-6 text-sm text-neutral-500">
+        <div class="flex flex-wrap justify-center gap-8 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">
           <div class="flex items-center">
-            <svg class="w-5 h-5 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 <%= DesignSystemHelper::TEXT_SUCCESS %> mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
             </svg>
             14-day free trial
           </div>
           <div class="flex items-center">
-            <svg class="w-5 h-5 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 <%= DesignSystemHelper::TEXT_SUCCESS %> mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
             </svg>
             No credit card required
           </div>
           <div class="flex items-center">
-            <svg class="w-5 h-5 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 <%= DesignSystemHelper::TEXT_SUCCESS %> mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
             </svg>
             Cancel anytime

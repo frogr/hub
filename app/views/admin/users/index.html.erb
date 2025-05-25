@@ -1,75 +1,69 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="sm:flex sm:items-center">
-    <div class="sm:flex-auto">
-      <h1 class="text-xl font-semibold text-gray-900">Users</h1>
-      <p class="mt-2 text-sm text-gray-700">Manage user accounts and subscriptions</p>
-    </div>
+<div class="<%= DesignSystemHelper::CONTAINER_WIDE %> py-20">
+  <div class="mb-12">
+    <h1 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Users</h1>
+    <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_SECONDARY %>">Manage user accounts and subscriptions</p>
   </div>
   
-  <div class="mt-8 flex flex-col">
-    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-          <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">User</th>
-                <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Plan</th>
-                <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
-                <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created</th>
-                <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                  <span class="sr-only">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-              <% @users.each do |user| %>
-                <tr>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm">
-                    <div>
-                      <div class="font-medium text-gray-900"><%= user.email %></div>
-                      <% if user.admin? %>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                          Admin
-                        </span>
-                      <% end %>
-                    </div>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= user.subscription&.plan&.name || "No Plan" %>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm">
-                    <% if user.subscription %>
-                      <% if user.subscription.trialing? %>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                          Trial (<%= user.subscription.days_remaining_in_trial %> days)
-                        </span>
-                      <% elsif user.subscription.active? %>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          Active
-                        </span>
-                      <% else %>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                          <%= user.subscription.status.humanize %>
-                        </span>
-                      <% end %>
-                    <% else %>
-                      <span class="text-gray-400">No subscription</span>
-                    <% end %>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= user.created_at.strftime("%b %d, %Y") %>
-                  </td>
-                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <%= link_to "View", admin_user_path(user), class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
-                    <%= link_to "Edit", edit_admin_user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div class="<%= DesignSystemHelper::CARD %>">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-primary-700/50">
+        <thead class="bg-primary-700/20">
+          <tr>
+            <th class="px-8 py-6 text-left <%= DesignSystemHelper::TEXT_BODY_SM %> font-semibold <%= DesignSystemHelper::TEXT_SECONDARY %>">User</th>
+            <th class="px-8 py-6 text-left <%= DesignSystemHelper::TEXT_BODY_SM %> font-semibold <%= DesignSystemHelper::TEXT_SECONDARY %>">Plan</th>
+            <th class="px-8 py-6 text-left <%= DesignSystemHelper::TEXT_BODY_SM %> font-semibold <%= DesignSystemHelper::TEXT_SECONDARY %>">Status</th>
+            <th class="px-8 py-6 text-left <%= DesignSystemHelper::TEXT_BODY_SM %> font-semibold <%= DesignSystemHelper::TEXT_SECONDARY %>">Created</th>
+            <th class="relative py-6 pl-3 pr-6">
+              <span class="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-primary-700/30">
+          <% @users.each do |user| %>
+            <tr class="hover:bg-primary-700/20 transition-colors">
+              <td class="whitespace-nowrap px-8 py-6">
+                <div>
+                  <div class="<%= DesignSystemHelper::TEXT_BODY %> font-medium <%= DesignSystemHelper::TEXT_PRIMARY %>"><%= user.email %></div>
+                  <% if user.admin? %>
+                    <span class="<%= DesignSystemHelper::BADGE_PRIMARY %> mt-2">
+                      Admin
+                    </span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-8 py-6 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">
+                <%= user.subscription&.plan&.name || "No Plan" %>
+              </td>
+              <td class="whitespace-nowrap px-8 py-6">
+                <% if user.subscription %>
+                  <% if user.subscription.trialing? %>
+                    <span class="<%= DesignSystemHelper::BADGE_WARNING %>">
+                      Trial (<%= user.subscription.days_remaining_in_trial %> days)
+                    </span>
+                  <% elsif user.subscription.active? %>
+                    <span class="<%= DesignSystemHelper::BADGE_SUCCESS %>">
+                      Active
+                    </span>
+                  <% else %>
+                    <span class="inline-flex items-center px-4 py-2 <%= DesignSystemHelper::TEXT_CAPTION %> font-semibold rounded-full bg-primary-700/50 <%= DesignSystemHelper::TEXT_SECONDARY %>">
+                      <%= user.subscription.status.humanize %>
+                    </span>
+                  <% end %>
+                <% else %>
+                  <span class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">No subscription</span>
+                <% end %>
+              </td>
+              <td class="whitespace-nowrap px-8 py-6 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">
+                <%= user.created_at.strftime("%b %d, %Y") %>
+              </td>
+              <td class="relative whitespace-nowrap py-6 pl-3 pr-6 text-right">
+                <%= link_to "View", admin_user_path(user), class: "#{DesignSystemHelper::LINK_SUBTLE} mr-6" %>
+                <%= link_to "Edit", edit_admin_user_path(user), class: DesignSystemHelper::LINK_SUBTLE %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
