@@ -1,50 +1,60 @@
 class SessionsController < ApplicationController
+  before_action :redirect_if_authenticated, only: [ :new, :create, :show ]
+
   def new
     @user = User.new
   end
 
   def create
-    @user = User.find_by(email: params[:email])
+    result = authentication_service.authenticate_with_magic_link
 
-    if @user&.passwordless_login_enabled?
-      session = @user.passwordless_with(
-        user_agent: request.user_agent,
-        remote_addr: request.remote_ip
-      )
-
-      magic_link_url = sign_in_url(token: session.token)
-
-      if Rails.env.development?
-        puts "\n" + "="*50
-        puts "MAGIC LINK FOR DEBUG:"
-        puts magic_link_url
-        puts "="*50 + "\n"
-      end
-
-      UserMailer.magic_link(@user, session).deliver_now
-
-      redirect_to new_session_path, notice: "Check your email for a magic link!"
-    elsif @user
-      redirect_to new_user_session_path, alert: "Please use password login for your account."
+    if result[:success]
+      redirect_to new_session_path, notice: result[:message]
     else
-      redirect_to new_session_path, alert: "User not found."
+      handle_authentication_failure(result[:message])
     end
   end
 
   def show
-    session = PasswordlessSession.available.find_by(token: params[:token])
+    result = authentication_service.authenticate_with_token(params[:token])
 
-    if session
-      session.update!(claimed_at: Time.current)
-      sign_in(session.authenticatable)
-      redirect_to dashboard_index_path, notice: "Successfully signed in!"
+    if result[:success]
+      sign_in(result[:user])
+      redirect_to after_sign_in_path_for(result[:user]), notice: result[:message]
     else
-      redirect_to new_session_path, alert: "Invalid or expired magic link."
+      redirect_to new_session_path, alert: result[:message]
     end
   end
 
   def destroy
-    sign_out(current_user)
-    redirect_to new_session_path, notice: "Successfully signed out!"
+    if user_signed_in?
+      sign_out(current_user)
+      redirect_to new_session_path, notice: "Successfully signed out!"
+    else
+      redirect_to new_session_path
+    end
+  end
+
+  private
+
+  def authentication_service
+    @authentication_service ||= AuthenticationService.new(
+      email: params[:email],
+      user_agent: request.user_agent,
+      remote_addr: request.remote_ip
+    )
+  end
+
+  def handle_authentication_failure(message)
+    case message
+    when "Password login required for this account"
+      redirect_to new_user_session_path, alert: message
+    else
+      redirect_to new_session_path, alert: message
+    end
+  end
+
+  def redirect_if_authenticated
+    redirect_to dashboard_index_path if user_signed_in?
   end
 end
