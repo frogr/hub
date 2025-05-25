@@ -23,49 +23,89 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <nav class="bg-gray-100 p-4">
-      <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <div class="flex items-center space-x-8">
-          <%= link_to "Hub", root_path, class: "text-xl font-semibold" %>
-          <div class="flex items-center space-x-4">
-            <%= link_to "Pricing", pricing_path, class: "text-gray-700 hover:text-gray-900" %>
-            <% if user_signed_in? %>
-              <%= link_to "Subscription", subscriptions_path, class: "text-gray-700 hover:text-gray-900" %>
-              <% if current_user.admin? %>
-                <%= link_to "Admin", admin_users_path, class: "text-gray-700 hover:text-gray-900" %>
+  <body class="bg-neutral-50 text-neutral-900 antialiased">
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-neutral-100">
+      <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center space-x-8">
+            <%= link_to root_path, class: "flex items-center space-x-2 group" do %>
+              <div class="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-200">
+                <span class="text-white font-bold text-xl">H</span>
+              </div>
+              <span class="text-2xl font-bold text-primary-900">Hub</span>
+            <% end %>
+            <div class="hidden md:flex items-center space-x-2">
+              <%= link_to "Pricing", pricing_path, class: "px-4 py-2 text-base font-medium text-neutral-600 rounded-lg transition-all duration-200 hover:bg-primary-50 hover:text-primary-700" %>
+              <% if user_signed_in? %>
+                <%= link_to "Subscription", subscriptions_path, class: "px-4 py-2 text-base font-medium text-neutral-600 rounded-lg transition-all duration-200 hover:bg-primary-50 hover:text-primary-700" %>
+                <% if current_user.admin? %>
+                  <%= link_to "Admin", admin_users_path, class: "px-4 py-2 text-base font-medium text-neutral-600 rounded-lg transition-all duration-200 hover:bg-primary-50 hover:text-primary-700" %>
+                <% end %>
               <% end %>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <% if user_signed_in? %>
+              <div class="hidden md:flex items-center space-x-3 pr-3 border-r border-neutral-200">
+                <div class="text-sm text-neutral-600">
+                  <%= current_user.email %>
+                </div>
+              </div>
+              <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, 
+                  class: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98] bg-transparent text-primary-600 hover:bg-primary-50 focus:ring-primary-500/50" %>
+            <% else %>
+              <%= link_to "Sign In", new_session_path, 
+                  class: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98] bg-transparent text-primary-600 hover:bg-primary-50 focus:ring-primary-500/50" %>
+              <%= link_to "Get Started", new_user_registration_path, 
+                  class: "inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98] bg-gradient-primary text-white shadow-md hover:shadow-lg focus:ring-primary-500/50 hover:brightness-110" %>
             <% end %>
           </div>
-        </div>
-        <div>
-          <% if user_signed_in? %>
-            <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, 
-                class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
-          <% else %>
-            <%= link_to "Sign In", new_session_path, 
-                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" %>
-            <%= link_to "Sign Up", new_user_registration_path, 
-                class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
-          <% end %>
         </div>
       </div>
     </nav>
     
-    <main>
-      <% if flash[:notice] %>
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 mx-4 mt-4">
-          <%= flash[:notice] %>
-        </div>
-      <% end %>
-      
-      <% if flash[:alert] %>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 mx-4 mt-4">
-          <%= flash[:alert] %>
+    <main class="min-h-screen">
+      <% if flash[:notice] || flash[:alert] %>
+        <div class="max-w-7xl mx-auto px-4 pt-4">
+          <% if flash[:notice] %>
+            <div class="p-4 rounded-xl border backdrop-blur-sm bg-success/10 border-success/20 text-success flex items-center space-x-3">
+              <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span><%= flash[:notice] %></span>
+            </div>
+          <% end %>
+          
+          <% if flash[:alert] %>
+            <div class="p-4 rounded-xl border backdrop-blur-sm bg-error/10 border-error/20 text-error flex items-center space-x-3">
+              <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+              </svg>
+              <span><%= flash[:alert] %></span>
+            </div>
+          <% end %>
         </div>
       <% end %>
       
       <%= yield %>
     </main>
+    
+    <footer class="mt-auto py-12 bg-white border-t border-neutral-100">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow">
+              <span class="text-white font-bold">H</span>
+            </div>
+            <span class="text-sm text-neutral-600">© <%= Date.current.year %> Hub. All rights reserved.</span>
+          </div>
+          <div class="flex items-center space-x-6">
+            <%= link_to "Privacy", "#", class: "text-neutral-600 no-underline hover:text-primary-600 hover:underline transition-all duration-200 text-sm" %>
+            <%= link_to "Terms", "#", class: "text-neutral-600 no-underline hover:text-primary-600 hover:underline transition-all duration-200 text-sm" %>
+            <%= link_to "Support", "#", class: "text-neutral-600 no-underline hover:text-primary-600 hover:underline transition-all duration-200 text-sm" %>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
