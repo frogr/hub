@@ -5,7 +5,7 @@ RSpec.describe StripeSignatureVerificationService do
   let(:payload) { { type: 'test.event', data: {} }.to_json }
   let(:timestamp) { Time.now.to_i }
   let(:signature) { generate_valid_signature(payload, timestamp, webhook_secret) }
-  
+
   before do
     allow(Rails.configuration.stripe).to receive(:[]).with(:webhook_secret).and_return(webhook_secret)
   end
@@ -27,7 +27,7 @@ RSpec.describe StripeSignatureVerificationService do
     context 'with valid signature' do
       it 'returns constructed Stripe event' do
         expected_event = Stripe::Event.construct_from({ type: 'test.event' })
-        
+
         expect(Stripe::Webhook).to receive(:construct_event)
           .with(payload, signature, webhook_secret)
           .and_return(expected_event)

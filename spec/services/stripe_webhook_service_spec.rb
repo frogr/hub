@@ -197,7 +197,7 @@ RSpec.describe StripeWebhookService do
 
       it 'logs errors and re-raises in test environment' do
         allow(User).to receive(:find_by).and_raise(StandardError.new('Database error'))
-        
+
         expect(Rails.logger).to receive(:error)
           .with('Error handling Stripe webhook checkout.session.completed: Database error')
 
@@ -207,7 +207,7 @@ RSpec.describe StripeWebhookService do
       it 'logs errors without raising in non-test environment' do
         allow(Rails.env).to receive(:test?).and_return(false)
         allow(User).to receive(:find_by).and_raise(StandardError.new('Database error'))
-        
+
         expect(Rails.logger).to receive(:error)
           .with('Error handling Stripe webhook checkout.session.completed: Database error')
 
