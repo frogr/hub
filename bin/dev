@@ -8,6 +8,8 @@ fi
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
+# Foreman reads Procfile.dev to start multiple services at once
+# (Rails server, Tailwind watcher, jobs, etc).
 # Let the debug gem allow remote connections,
 # but avoid loading until `debugger` is called
 export RUBY_DEBUG_OPEN="true"

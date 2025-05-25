@@ -33,6 +33,9 @@ bin/rails db:prepare
 
 # 4. Run
 bin/dev
+# bin/dev uses Foreman with Procfile.dev to run the Rails server,
+# TailwindCSS watcher, and job processor. Add new processes to
+# Procfile.dev as needed.
 bundle exec rspec
 ```
 
