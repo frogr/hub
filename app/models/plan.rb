@@ -6,6 +6,7 @@ class Plan < ApplicationRecord
   validates :currency, presence: true
   validates :interval, presence: true, inclusion: { in: %w[month year] }
   validates :stripe_price_id, uniqueness: true, allow_nil: true
+  validates :trial_days, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   serialize :features, type: Array, coder: JSON
 

@@ -6,7 +6,6 @@
         <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
         <div class="flex items-center space-x-4">
           <span class="text-gray-600">Welcome, <%= current_user.email %></span>
-          <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, class: "bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" %>
         </div>
       </div>
     </div>
@@ -30,8 +29,14 @@
           <p class="mt-1 text-sm text-gray-900">
             <% if current_user.subscription %>
               <%= current_user.subscription.plan.name %>
-              <% if current_user.subscription.cancel_at_period_end? %>
-                (Canceling <%= current_user.subscription.current_period_end.strftime("%B %d, %Y") %>)
+              <% if current_user.subscription.trialing? %>
+                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Trial (<%= current_user.subscription.days_remaining_in_trial %> days left)
+                </span>
+              <% elsif current_user.subscription.cancel_at_period_end? %>
+                <span class="ml-2 text-sm text-gray-500">
+                  (Canceling <%= current_user.subscription.current_period_end.strftime("%B %d, %Y") %>)
+                </span>
               <% end %>
             <% else %>
               No active subscription
@@ -41,28 +46,144 @@
         <div>
           <label class="block text-sm font-medium text-gray-700">Manage Subscription</label>
           <p class="mt-1">
-            <%= link_to "View Plans", subscriptions_path, class: "text-indigo-600 hover:text-indigo-500 text-sm" %>
+            <%= link_to "View Plans", pricing_path, class: "text-indigo-600 hover:text-indigo-500 text-sm" %>
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Dashboard Content -->
-    <div class="grid md:grid-cols-3 gap-6">
+    <!-- Feature Cards -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <!-- Basic Features -->
       <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-2">Quick Stats</h3>
-        <p class="text-gray-600">Your personalized metrics will appear here.</p>
+        <h3 class="text-lg font-semibold mb-4">Basic Features</h3>
+        <p class="text-gray-600 mb-4">Available to all users</p>
+        <ul class="space-y-2">
+          <li class="flex items-center">
+            <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-sm">Dashboard Access</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-sm">Basic Support</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="text-sm">Profile Management</span>
+          </li>
+        </ul>
       </div>
       
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-2">Recent Activity</h3>
-        <p class="text-gray-600">Your recent activity will be shown here.</p>
+      <!-- Pro Features -->
+      <div class="bg-white rounded-lg shadow p-6 <%= 'opacity-50' unless user_has_access_to_feature?(:api_access) %>">
+        <h3 class="text-lg font-semibold mb-4">Pro Features</h3>
+        <% if user_has_access_to_feature?(:api_access) %>
+          <p class="text-green-600 mb-4 text-sm font-medium">✓ Available on your plan</p>
+          <ul class="space-y-2">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm">API Access</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm">Custom Integrations</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm">Priority Support</span>
+            </li>
+          </ul>
+          <%= link_to "Access API →", "#", class: "mt-4 inline-block text-indigo-600 hover:text-indigo-500 text-sm font-medium" %>
+        <% else %>
+          <p class="text-gray-500 mb-4 text-sm">Requires Pro plan or higher</p>
+          <ul class="space-y-2 opacity-50">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              <span class="text-sm text-gray-500">API Access</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              <span class="text-sm text-gray-500">Custom Integrations</span>
+            </li>
+          </ul>
+          <%= link_to "Upgrade to Pro →", pricing_path, class: "mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700" %>
+        <% end %>
       </div>
       
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-2">Quick Actions</h3>
-        <p class="text-gray-600">Common actions and shortcuts.</p>
+      <!-- Elite Features -->
+      <div class="bg-white rounded-lg shadow p-6 <%= 'opacity-50' unless user_has_access_to_feature?(:enterprise_features) %>">
+        <h3 class="text-lg font-semibold mb-4">Elite Features</h3>
+        <% if user_has_access_to_feature?(:enterprise_features) %>
+          <p class="text-green-600 mb-4 text-sm font-medium">✓ Available on your plan</p>
+          <ul class="space-y-2">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm">Advanced Analytics</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm">Custom Development</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span class="text-sm">Dedicated Support</span>
+            </li>
+          </ul>
+          <%= link_to "View Analytics →", "#", class: "mt-4 inline-block text-indigo-600 hover:text-indigo-500 text-sm font-medium" %>
+        <% else %>
+          <p class="text-gray-500 mb-4 text-sm">Requires Elite plan</p>
+          <ul class="space-y-2 opacity-50">
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              <span class="text-sm text-gray-500">Advanced Analytics</span>
+            </li>
+            <li class="flex items-center">
+              <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              <span class="text-sm text-gray-500">Custom Development</span>
+            </li>
+          </ul>
+          <%= link_to "Upgrade to Elite →", pricing_path, class: "mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700" %>
+        <% end %>
       </div>
+    </div>
+
+    <!-- Example of using require_subscription! in controller -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-blue-900 mb-2">Developer Note: Feature Gating</h3>
+      <p class="text-blue-800 mb-3">To protect controller actions by subscription, use:</p>
+      <pre class="bg-blue-100 p-3 rounded text-sm overflow-x-auto">
+# Require any active subscription
+before_action :require_subscription!
+
+# Require specific plans
+before_action -> { require_subscription!(["Pro", "Elite"]) }, only: [:api_access]
+before_action -> { require_subscription!("Elite") }, only: [:analytics]</pre>
     </div>
   </div>
 </div>

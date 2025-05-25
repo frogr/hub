@@ -1,0 +1,95 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="text-center">
+    <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+      Choose Your Plan
+    </h1>
+    <p class="mt-5 text-xl text-gray-500">
+      Select the perfect plan for your needs. Upgrade or downgrade at any time.
+    </p>
+  </div>
+
+  <% if @subscription&.trialing? %>
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+      <p class="text-lg text-blue-900">
+        You're currently on a free trial of the <%= @current_plan.name %> plan.
+        <span class="font-semibold"><%= @subscription.days_remaining_in_trial %> days remaining.</span>
+      </p>
+    </div>
+  <% end %>
+
+  <div class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6 lg:max-w-6xl lg:mx-auto">
+    <% @plans.each do |plan| %>
+      <div class="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 <%= 'ring-2 ring-indigo-500' if plan == @current_plan %>">
+        <div class="p-6">
+          <h2 class="text-lg font-medium text-gray-900">
+            <%= plan.name %>
+            <% if plan == @current_plan %>
+              <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                Current Plan
+              </span>
+            <% end %>
+          </h2>
+          <p class="mt-4">
+            <span class="text-4xl font-extrabold text-gray-900">
+              <% if plan.free? %>
+                Free
+              <% else %>
+                $<%= plan.amount / 100 %>
+              <% end %>
+            </span>
+            <% unless plan.free? %>
+              <span class="text-base font-medium text-gray-500">/<%= plan.interval %></span>
+            <% end %>
+          </p>
+          <% if plan.trial_days > 0 %>
+            <p class="mt-2 text-sm text-gray-500">
+              <%= plan.trial_days %>-day free trial
+            </p>
+          <% end %>
+          
+          <% if user_signed_in? %>
+            <% if plan == @current_plan %>
+              <button disabled class="mt-8 block w-full bg-gray-300 text-gray-700 rounded-md py-2 text-sm font-semibold cursor-not-allowed">
+                Current Plan
+              </button>
+            <% elsif @subscription&.trial_expired? && !plan.free? %>
+              <%= link_to "Subscribe", new_subscription_path(plan_id: plan.id), 
+                  class: "mt-8 block w-full bg-indigo-600 text-white text-center rounded-md py-2 text-sm font-semibold hover:bg-indigo-700" %>
+            <% elsif plan.free? && @current_plan && !@current_plan.free? %>
+              <%= button_to "Downgrade to Free", subscription_path(@subscription), 
+                  method: :delete, 
+                  data: { confirm: "Are you sure you want to downgrade to the free plan?" },
+                  class: "mt-8 block w-full bg-red-600 text-white text-center rounded-md py-2 text-sm font-semibold hover:bg-red-700" %>
+            <% elsif !plan.free? %>
+              <%= link_to "Upgrade", new_subscription_path(plan_id: plan.id), 
+                  class: "mt-8 block w-full bg-indigo-600 text-white text-center rounded-md py-2 text-sm font-semibold hover:bg-indigo-700" %>
+            <% else %>
+              <button disabled class="mt-8 block w-full bg-gray-300 text-gray-700 rounded-md py-2 text-sm font-semibold cursor-not-allowed">
+                Not Available
+              </button>
+            <% end %>
+          <% else %>
+            <%= link_to "Get Started", new_user_registration_path, 
+                class: "mt-8 block w-full bg-indigo-600 text-white text-center rounded-md py-2 text-sm font-semibold hover:bg-indigo-700" %>
+          <% end %>
+        </div>
+        
+        <div class="pt-6 pb-8 px-6">
+          <h3 class="text-xs font-medium text-gray-900 tracking-wide uppercase">
+            What's included
+          </h3>
+          <ul class="mt-6 space-y-4">
+            <% plan.features.each do |feature| %>
+              <li class="flex space-x-3">
+                <svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-sm text-gray-500"><%= feature %></span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

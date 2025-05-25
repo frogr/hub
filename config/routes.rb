@@ -1,5 +1,14 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :users, only: [ :index, :show, :edit, :update ] do
+      member do
+        patch :update_subscription
+      end
+    end
+  end
   devise_for :users
+
+  get "pricing", to: "pricing#index", as: :pricing
 
   resources :sessions, only: [ :new, :create, :show, :destroy ]
   get "sign_in/:token", to: "sessions#show", as: :sign_in
