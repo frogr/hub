@@ -1,4 +1,19 @@
-<div>
-  <h1 class="font-bold text-4xl">Subscriptions#create</h1>
-  <p>Find me in app/views/subscriptions/create.html.erb</p>
-</div>
+<section class="<%= DesignSystemHelper::SECTION %>">
+  <div class="<%= DesignSystemHelper::CONTAINER_NARROW %> text-center">
+    <div class="<%= DesignSystemHelper::CARD %>">
+      <div class="<%= DesignSystemHelper::CARD_BODY %> py-16">
+        <div class="w-20 h-20 bg-green-800/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 <%= DesignSystemHelper::TEXT_SUCCESS %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h1 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Subscription Created!</h1>
+        <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %> mb-8">Your subscription has been created successfully. Welcome to your new plan!</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <%= link_to "View Subscription", subscriptions_path, class: DesignSystemHelper::BTN_PRIMARY %>
+          <%= link_to "Go to Dashboard", authenticated_dashboard_path, class: DesignSystemHelper::BTN_GHOST %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

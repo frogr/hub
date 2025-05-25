@@ -140,7 +140,7 @@
                 </li>
               </ul>
               <div class="mt-8">
-                <%= link_to "#", class: btn_accent(:sm) + " w-full" do %>
+                <%= link_to "#", class: "#{DesignSystemHelper::BTN_ACCENT} #{DesignSystemHelper::BTN_SM} w-full" do %>
                   Access API
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -151,20 +151,20 @@
               <p class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %> mb-6">Requires Pro plan or higher</p>
               <ul class="space-y-4 opacity-60">
                 <li class="flex items-center">
-                  <svg class="w-5 h-5 <%= TEXT_ERROR %> mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg class="w-5 h-5 <%= DesignSystemHelper::TEXT_ERROR %> mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
                   </svg>
                   <span class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">API Access</span>
                 </li>
                 <li class="flex items-center">
-                  <svg class="w-5 h-5 <%= TEXT_ERROR %> mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg class="w-5 h-5 <%= DesignSystemHelper::TEXT_ERROR %> mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
                   </svg>
                   <span class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">Custom Integrations</span>
                 </li>
               </ul>
               <div class="mt-8">
-                <%= link_to pricing_path, class: btn_primary(:sm) + " w-full" do %>
+                <%= link_to pricing_path, class: "#{DesignSystemHelper::BTN_PRIMARY} #{DesignSystemHelper::BTN_SM} w-full" do %>
                   Upgrade to Pro
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -178,7 +178,7 @@
         <!-- Elite Features -->
         <div class="<%= DesignSystemHelper::CARD %> hover:shadow-2xl transition-all duration-300 <%= 'opacity-60' unless user_has_access_to_feature?(:enterprise_features) %>">
           <div class="<%= DesignSystemHelper::CARD_BODY %>">
-            <div class="w-16 h-16 bg-gradient-to-br from-gold-600 to-gold-800 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+            <div class="w-16 h-16 bg-gradient-to-br from-accent-600 to-accent-800 rounded-xl flex items-center justify-center mb-6 shadow-lg">
               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
               </svg>
@@ -207,7 +207,7 @@
                 </li>
               </ul>
               <div class="mt-8">
-                <%= link_to "#", class: btn_accent(:sm) + " w-full" do %>
+                <%= link_to "#", class: "#{DesignSystemHelper::BTN_ACCENT} #{DesignSystemHelper::BTN_SM} w-full" do %>
                   View Analytics
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -231,7 +231,7 @@
                 </li>
               </ul>
               <div class="mt-8">
-                <%= link_to pricing_path, class: btn_primary(:sm) + " w-full" do %>
+                <%= link_to pricing_path, class: "#{DesignSystemHelper::BTN_PRIMARY} #{DesignSystemHelper::BTN_SM} w-full" do %>
                   Upgrade to Elite
                   <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>

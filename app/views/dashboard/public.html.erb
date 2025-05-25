@@ -14,13 +14,13 @@
     </p>
     
     <div class="flex flex-col sm:flex-row gap-6 justify-center">
-      <%= link_to new_user_registration_path, class: btn_accent(:xl) + " group" do %>
+      <%= link_to new_user_registration_path, class: "#{DesignSystemHelper::BTN_ACCENT} #{DesignSystemHelper::BTN_XL} group" do %>
         <span>Start Free Trial</span>
         <svg class="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
         </svg>
       <% end %>
-      <%= link_to "Watch Demo", "#", class: btn_secondary(:xl) %>
+      <%= link_to "Watch Demo", "#", class: "#{DesignSystemHelper::BTN_SECONDARY} #{DesignSystemHelper::BTN_XL}" %>
     </div>
     
     <div class="mt-10 <%= DesignSystemHelper::TEXT_BODY_SM %> <%= DesignSystemHelper::TEXT_MUTED %>">
@@ -77,7 +77,7 @@
       <!-- Feature 3 -->
       <div class="<%= DesignSystemHelper::CARD %> group hover:scale-[1.02] transition-transform duration-300">
         <div class="<%= DesignSystemHelper::CARD_BODY %> text-center">
-          <div class="w-20 h-20 bg-gradient-to-br from-gold-600 to-gold-800 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+          <div class="w-20 h-20 bg-gradient-to-br from-accent-600 to-accent-800 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
             </svg>
@@ -134,13 +134,13 @@
         </p>
         
         <div class="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-          <%= link_to new_user_registration_path, class: btn_accent(:xl) + " group" do %>
+          <%= link_to new_user_registration_path, class: "#{DesignSystemHelper::BTN_ACCENT} #{DesignSystemHelper::BTN_XL} group" do %>
             <span>Get Started Free</span>
             <svg class="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
             </svg>
           <% end %>
-          <%= link_to "Talk to Sales", "#", class: btn_secondary(:xl) %>
+          <%= link_to "Talk to Sales", "#", class: "#{DesignSystemHelper::BTN_SECONDARY} #{DesignSystemHelper::BTN_XL}" %>
         </div>
         
         <div class="flex flex-wrap justify-center gap-8 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">

@@ -1,91 +1,51 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="<%= DesignSystemHelper::CONTAINER_WIDE %> py-20">
   <div class="mb-6">
-    <%= link_to "← Back to User", admin_user_path(@user), class: "text-indigo-600 hover:text-indigo-900" %>
+    <%= link_to "← Back to User", admin_user_path(@user), class: DesignSystemHelper::LINK %>
   </div>
   
-  <div class="bg-white shadow sm:rounded-lg">
-    <div class="px-4 py-5 sm:p-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Edit User</h3>
+  <div class="<%= DesignSystemHelper::CARD %>">
+    <div class="<%= DesignSystemHelper::CARD_BODY %>">
+      <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-8">Edit User</h3>
       
       <%= form_with model: @user, url: admin_user_path(@user), method: :patch do |form| %>
         <div class="space-y-6">
           <div>
-            <%= form.label :email, class: "block text-sm font-medium text-gray-700" %>
-            <%= form.email_field :email, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            <%= form.label :email, class: DesignSystemHelper::FORM_LABEL %>
+            <%= form.email_field :email, class: DesignSystemHelper::FORM_INPUT %>
+          </div>
+          
+          <div class="flex items-center">
+            <%= form.check_box :admin, class: "h-5 w-5 rounded border-primary-600/50 bg-primary-800/50 text-accent-500 focus:ring-accent-500/30 focus:ring-offset-0 focus:ring-4" %>
+            <%= form.label :admin, "Administrator", class: "ml-3 #{DesignSystemHelper::TEXT_BODY} #{DesignSystemHelper::TEXT_SECONDARY}" %>
           </div>
           
           <div>
-            <%= form.check_box :admin, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" %>
-            <%= form.label :admin, "Administrator", class: "ml-2 text-sm font-medium text-gray-700" %>
-          </div>
-          
-          <div>
-            <%= form.submit "Update User", class: "bg-indigo-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-indigo-700" %>
+            <%= form.submit "Update User", class: DesignSystemHelper::BTN_PRIMARY %>
           </div>
         </div>
       <% end %>
     </div>
   </div>
   
-  <div class="bg-white shadow sm:rounded-lg mt-8">
-    <div class="px-4 py-5 sm:p-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Manage Subscription</h3>
-      
-      <% if @user.subscription %>
-        <div class="mb-4 p-4 bg-gray-50 rounded-md">
-          <p class="text-sm text-gray-700">
-            Current plan: <strong><%= @user.subscription.plan.name %></strong> 
-            (<%= @user.subscription.status.humanize %>)
-          </p>
-          <% if @user.subscription.trial_ends_at %>
-            <p class="text-sm text-gray-700 mt-1">
-              Trial ends: <%= @user.subscription.trial_ends_at.strftime("%B %d, %Y") %>
-            </p>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="mb-4 p-4 bg-yellow-50 rounded-md">
-          <p class="text-sm text-yellow-800">User has no active subscription</p>
-        </div>
-      <% end %>
-      
-      <%= form_with url: update_subscription_admin_user_path(@user), method: :patch do |form| %>
-        <div class="space-y-4">
-          <div>
-            <%= form.label :plan_id, "Plan", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.select :plan_id, 
-                options_from_collection_for_select(@plans, :id, :name, @user.subscription&.plan_id),
-                { prompt: "Select a plan" },
-                class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
-          </div>
-          
-          <div>
-            <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.select :status, 
-                options_for_select([
-                  ["Trialing", "trialing"],
-                  ["Active", "active"],
-                  ["Canceled", "canceled"],
-                  ["Past Due", "past_due"],
-                  ["Unpaid", "unpaid"]
-                ], @user.subscription&.status),
-                { prompt: "Select status" },
-                class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
-          </div>
-          
-          <div>
-            <%= form.label :trial_ends_at, "Trial End Date (optional)", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.datetime_field :trial_ends_at, 
-                value: @user.subscription&.trial_ends_at,
-                class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
-            <p class="mt-1 text-xs text-gray-500">Leave blank to keep current trial end date</p>
-          </div>
-          
-          <div>
-            <%= form.submit "Update Subscription", class: "bg-green-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-700" %>
-          </div>
-        </div>
-      <% end %>
+  <div class="<%= DesignSystemHelper::CARD %> mt-8">
+    <div class="<%= DesignSystemHelper::CARD_BODY %>">
+      <h3 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %> mb-4">Danger Zone</h3>
+      <div class="<%= DesignSystemHelper::ALERT_ERROR %>">
+        <p class="mb-4">Once you delete this user, there is no going back. This action will:</p>
+        <ul class="list-disc list-inside space-y-2 mb-4">
+          <li>Delete the user account permanently</li>
+          <li>Cancel any active subscriptions</li>
+          <li>Remove all associated data</li>
+        </ul>
+        <%= button_to "Delete User", 
+              admin_user_path(@user), 
+              method: :delete,
+              data: { 
+                confirm: "Are you absolutely sure? This action cannot be undone.",
+                turbo_confirm: "Are you absolutely sure? This action cannot be undone."
+              },
+              class: DesignSystemHelper::BTN_DANGER %>
+      </div>
     </div>
   </div>
 </div>

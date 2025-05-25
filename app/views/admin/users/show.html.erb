@@ -1,113 +1,112 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="<%= DesignSystemHelper::CONTAINER_WIDE %> py-20">
   <div class="mb-6">
-    <%= link_to "← Back to Users", admin_users_path, class: "text-indigo-600 hover:text-indigo-900" %>
+    <%= link_to "← Back to Users", admin_users_path, class: DesignSystemHelper::LINK %>
   </div>
   
-  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-    <div class="px-4 py-5 sm:px-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900">
+  <div class="<%= DesignSystemHelper::CARD %>">
+    <div class="<%= DesignSystemHelper::CARD_HEADER %>">
+      <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
         User Information
       </h3>
-      <p class="mt-1 max-w-2xl text-sm text-gray-500">
+      <p class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_MUTED %>">
         Personal details and subscription information
       </p>
     </div>
-    <div class="border-t border-gray-200">
-      <dl>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Email</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @user.email %></dd>
+    <div class="<%= DesignSystemHelper::CARD_BODY %>">
+      <dl class="space-y-6">
+        <div>
+          <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Email</dt>
+          <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>"><%= @user.email %></dd>
         </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Admin</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+        <div>
+          <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Admin</dt>
+          <dd class="mt-1">
             <% if @user.admin? %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+              <span class="<%= DesignSystemHelper::BADGE_PRIMARY %>">
                 Yes
               </span>
             <% else %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              <span class="<%= DesignSystemHelper::BADGE_BASE %> bg-primary-700/50 <%= DesignSystemHelper::TEXT_SECONDARY %> border border-primary-600/50">
                 No
               </span>
             <% end %>
           </dd>
         </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Created</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+        <div>
+          <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Created</dt>
+          <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
             <%= @user.created_at.strftime("%B %d, %Y at %l:%M %p") %>
           </dd>
         </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Stripe Customer ID</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+        <div>
+          <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Stripe Customer ID</dt>
+          <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
             <%= @user.stripe_customer_id || "Not created" %>
           </dd>
         </div>
       </dl>
     </div>
   </div>
-
+  
   <% if @user.subscription %>
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-8">
-      <div class="px-4 py-5 sm:px-6">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">
+    <div class="<%= DesignSystemHelper::CARD %> mt-8">
+      <div class="<%= DesignSystemHelper::CARD_HEADER %>">
+        <h3 class="<%= DesignSystemHelper::TEXT_HEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
           Subscription Details
         </h3>
       </div>
-      <div class="border-t border-gray-200">
-        <dl>
-          <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Plan</dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              <%= @user.subscription.plan.name %>
-            </dd>
+      <div class="<%= DesignSystemHelper::CARD_BODY %>">
+        <dl class="space-y-6">
+          <div>
+            <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Plan</dt>
+            <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>"><%= @user.subscription.plan.name %></dd>
           </div>
-          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt class="text-sm font-medium text-gray-500">Status</dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <div>
+            <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Status</dt>
+            <dd class="mt-1">
               <% if @user.subscription.trialing? %>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Trial (<%= @user.subscription.days_remaining_in_trial %> days left)
+                <span class="<%= DesignSystemHelper::BADGE_WARNING %>">
+                  Trial (<%= @user.subscription.days_remaining_in_trial %> days remaining)
                 </span>
               <% elsif @user.subscription.active? %>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span class="<%= DesignSystemHelper::BADGE_SUCCESS %>">
                   Active
                 </span>
+              <% elsif @user.subscription.trial_expired? %>
+                <span class="<%= DesignSystemHelper::BADGE_BASE %> bg-red-800/50 <%= DesignSystemHelper::TEXT_ERROR %> border border-red-600/50">
+                  Trial Expired
+                </span>
               <% else %>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                <span class="<%= DesignSystemHelper::BADGE_BASE %> bg-primary-700/50 <%= DesignSystemHelper::TEXT_SECONDARY %> border border-primary-600/50">
                   <%= @user.subscription.status.humanize %>
                 </span>
               <% end %>
             </dd>
           </div>
-          <% if @user.subscription.trial_ends_at %>
-            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt class="text-sm font-medium text-gray-500">Trial Ends</dt>
-              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <%= @user.subscription.trial_ends_at.strftime("%B %d, %Y at %l:%M %p") %>
+          <% if @user.subscription.current_period_end %>
+            <div>
+              <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">
+                <%= @user.subscription.cancel_at_period_end? ? "Subscription Ends" : "Next Billing Date" %>
+              </dt>
+              <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
+                <%= @user.subscription.current_period_end.strftime("%B %d, %Y") %>
               </dd>
             </div>
           <% end %>
-          <% if @user.subscription.current_period_end %>
-            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt class="text-sm font-medium text-gray-500">Current Period End</dt>
-              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <%= @user.subscription.current_period_end.strftime("%B %d, %Y") %>
+          <% if @user.subscription.stripe_subscription_id %>
+            <div>
+              <dt class="<%= DesignSystemHelper::TEXT_CAPTION %> font-medium <%= DesignSystemHelper::TEXT_MUTED %>">Stripe Subscription ID</dt>
+              <dd class="mt-1 <%= DesignSystemHelper::TEXT_BODY_SM %> font-mono <%= DesignSystemHelper::TEXT_PRIMARY %>">
+                <%= @user.subscription.stripe_subscription_id %>
               </dd>
             </div>
           <% end %>
         </dl>
       </div>
     </div>
-  <% else %>
-    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-8">
-      <p class="text-yellow-800">This user does not have a subscription.</p>
-    </div>
   <% end %>
   
-  <div class="mt-6 flex space-x-4">
-    <%= link_to "Edit User", edit_admin_user_path(@user), 
-        class: "bg-indigo-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-indigo-700" %>
+  <div class="mt-8 flex gap-4">
+    <%= link_to "Edit User", edit_admin_user_path(@user), class: DesignSystemHelper::BTN_PRIMARY %>
   </div>
 </div>

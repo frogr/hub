@@ -21,7 +21,7 @@ RSpec.describe 'Subscriptions', type: :request do
       get subscriptions_path
 
       expect(response.body).to include('Subscription Management')
-      expect(response.body).to include('View available plans')
+      expect(response.body).to include('View Available Plans')
     end
 
     context 'when user has a subscription' do
