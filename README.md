@@ -1,6 +1,10 @@
 [![CI](https://github.com/frogr/hub/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/frogr/hub/actions/workflows/ci.yml)
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-[![Rails 8.x · Ruby 3.3](https://img.shields.io/badge/Rails-8.x-blue?logo=ruby-on-rails)](https://rubyonrails.org/)
+[![Rails 8.0.2 · Ruby 3.4.4](https://img.shields.io/badge/Rails-8.0.2-blue?logo=ruby-on-rails)](https://rubyonrails.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![Good First Issues](https://img.shields.io/github/issues/frogr/hub/good%20first%20issue.svg)](https://github.com/frogr/hub/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[![Powered by Rails](https://img.shields.io/badge/powered_by-rails-red.svg?logo=ruby-on-rails)](https://rubyonrails.org/)
+[![Made with Love](https://img.shields.io/badge/made%20with-%E2%9D%A4%20by%20AustinCo-red.svg)](https://github.com/frogr)
 
 # hub
 Hub is an opinionated tool that makes it easy for you to start your own Rails projects. Instead of wasting your first week of development gathering boilerplate, assembling packages, ensuring versions are correct, this repo can be forked, cloned, or otherwise altered to provide a great starting point.
