@@ -6,7 +6,7 @@ RSpec.describe 'Webhooks', type: :request do
     let(:payload) { { type: 'test.event' }.to_json }
     let(:timestamp) { Time.now.to_i }
     let(:signature) { generate_stripe_signature(payload, timestamp, webhook_secret) }
-    
+
     before do
       allow(Rails.configuration.stripe).to receive(:[]).with(:webhook_secret).and_return(webhook_secret)
     end
@@ -18,7 +18,7 @@ RSpec.describe 'Webhooks', type: :request do
     end
 
     def post_webhook(payload_data, headers = {})
-      post webhooks_stripe_path, 
+      post webhooks_stripe_path,
            params: payload_data.to_json,
            headers: headers.merge({
              'Content-Type' => 'application/json',
@@ -33,7 +33,7 @@ RSpec.describe 'Webhooks', type: :request do
           .and_return(Stripe::Event.construct_from({ type: 'test.event' }))
 
         post_webhook({ type: 'test.event' })
-        
+
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({ 'received' => true })
       end
@@ -44,10 +44,10 @@ RSpec.describe 'Webhooks', type: :request do
         allow(Stripe::Webhook).to receive(:construct_event)
           .and_raise(JSON::ParserError.new('Invalid JSON'))
 
-        post webhooks_stripe_path, 
+        post webhooks_stripe_path,
              params: 'invalid json',
              headers: { 'HTTP_STRIPE_SIGNATURE' => signature }
-        
+
         expect(response).to have_http_status(:bad_request)
         expect(JSON.parse(response.body)).to eq({ 'error' => 'Invalid payload' })
       end
@@ -59,7 +59,7 @@ RSpec.describe 'Webhooks', type: :request do
           .and_raise(Stripe::SignatureVerificationError.new('Invalid signature', signature))
 
         post_webhook({ type: 'test.event' })
-        
+
         expect(response).to have_http_status(:bad_request)
         expect(JSON.parse(response.body)).to eq({ 'error' => 'Invalid signature' })
       end
@@ -134,7 +134,7 @@ RSpec.describe 'Webhooks', type: :request do
 
         it 'updates subscription status' do
           post_webhook({ type: 'customer.subscription.updated' })
-          
+
           expect(response).to have_http_status(:ok)
           subscription.reload
           expect(subscription.status).to eq('past_due')
@@ -154,11 +154,11 @@ RSpec.describe 'Webhooks', type: :request do
               }
             }
           }
-          
+
           expect {
             post_webhook(nonexistent_event)
           }.not_to raise_error
-          
+
           expect(response).to have_http_status(:ok)
         end
       end
@@ -178,7 +178,7 @@ RSpec.describe 'Webhooks', type: :request do
 
         it 'marks subscription as canceled' do
           post_webhook({ type: 'customer.subscription.deleted' })
-          
+
           expect(response).to have_http_status(:ok)
           expect(subscription.reload.status).to eq('canceled')
         end
@@ -192,11 +192,11 @@ RSpec.describe 'Webhooks', type: :request do
               }
             }
           }
-          
+
           expect {
             post_webhook(nonexistent_event)
           }.not_to raise_error
-          
+
           expect(response).to have_http_status(:ok)
         end
       end
@@ -216,16 +216,16 @@ RSpec.describe 'Webhooks', type: :request do
 
         it 'logs payment failure' do
           expect(Rails.logger).to receive(:warn).with("Payment failed for subscription #{subscription.id}")
-          
+
           post_webhook({ type: 'invoice.payment_failed' })
           expect(response).to have_http_status(:ok)
         end
 
         it 'handles missing subscription gracefully' do
           event.data.object.subscription = 'sub_nonexistent'
-          
+
           expect(Rails.logger).not_to receive(:warn)
-          
+
           post_webhook({ type: 'invoice.payment_failed' })
           expect(response).to have_http_status(:ok)
         end
@@ -241,9 +241,9 @@ RSpec.describe 'Webhooks', type: :request do
 
         it 'logs unhandled event and returns success' do
           allow(Rails.logger).to receive(:info)
-          
+
           post_webhook({ type: 'unhandled.event.type' })
-          
+
           expect(response).to have_http_status(:ok)
           expect(Rails.logger).to have_received(:info).with('Unhandled Stripe event type: unhandled.event.type')
         end
@@ -266,7 +266,7 @@ RSpec.describe 'Webhooks', type: :request do
         it 'catches and logs errors without failing the request' do
           allow(User).to receive(:find_by).and_raise(StandardError.new('Database error'))
           expect(Rails.logger).to receive(:error).with('Error handling Stripe webhook: Database error')
-          
+
           post_webhook({ type: 'checkout.session.completed' })
           expect(response).to have_http_status(:ok)
         end

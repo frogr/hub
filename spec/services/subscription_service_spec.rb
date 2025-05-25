@@ -4,7 +4,7 @@ RSpec.describe SubscriptionService, type: :service do
   let(:user) { create(:user) }
   let(:plan) { create(:plan, :with_stripe_price) }
   let(:service) { described_class.new(user, plan) }
-  
+
   describe '#initialize' do
     it 'sets the user and plan' do
       expect(service.user).to eq(user)
@@ -47,14 +47,14 @@ RSpec.describe SubscriptionService, type: :service do
       context 'without trial period' do
         it 'creates checkout session without trial data' do
           checkout_session = double('Stripe::Checkout::Session', url: 'https://checkout.stripe.com/pay/cs_123')
-          
+
           expect(Stripe::Checkout::Session).to receive(:create).with({
             customer: 'cus_123',
-            payment_method_types: ['card'],
-            line_items: [{
+            payment_method_types: [ 'card' ],
+            line_items: [ {
               price: plan.stripe_price_id,
               quantity: 1
-            }],
+            } ],
             mode: 'subscription',
             success_url: success_url,
             cancel_url: cancel_url,
@@ -74,14 +74,14 @@ RSpec.describe SubscriptionService, type: :service do
 
         it 'creates checkout session with trial data' do
           checkout_session = double('Stripe::Checkout::Session', url: 'https://checkout.stripe.com/pay/cs_123')
-          
+
           expect(Stripe::Checkout::Session).to receive(:create).with({
             customer: 'cus_123',
-            payment_method_types: ['card'],
-            line_items: [{
+            payment_method_types: [ 'card' ],
+            line_items: [ {
               price: plan.stripe_price_id,
               quantity: 1
-            }],
+            } ],
             mode: 'subscription',
             success_url: success_url,
             cancel_url: cancel_url,
@@ -99,7 +99,7 @@ RSpec.describe SubscriptionService, type: :service do
 
       it 'returns nil when customer creation fails' do
         allow_any_instance_of(StripeCustomerService).to receive(:find_or_create).and_return(nil)
-        
+
         result = service.create_checkout_session(success_url: success_url, cancel_url: cancel_url)
         expect(result).to be_nil
       end
@@ -107,7 +107,7 @@ RSpec.describe SubscriptionService, type: :service do
       it 'returns nil when Stripe API fails' do
         expect(Stripe::Checkout::Session).to receive(:create).and_raise(Stripe::StripeError.new('API error'))
         expect(Rails.logger).to receive(:error).with('Failed to create checkout session: API error')
-        
+
         result = service.create_checkout_session(success_url: success_url, cancel_url: cancel_url)
         expect(result).to be_nil
       end
@@ -160,19 +160,19 @@ RSpec.describe SubscriptionService, type: :service do
 
       it 'cancels existing subscription and creates new one' do
         expect(Stripe::Subscription).to receive(:cancel).with(existing_subscription.stripe_subscription_id)
-        
+
         expect {
           result = service.create_subscription(stripe_subscription_id)
           expect(result).to be_a(Subscription)
           expect(result.id).not_to eq(existing_subscription.id)
         }.to change(Subscription, :count).by(0)
-        
+
         expect(Subscription.find_by(id: existing_subscription.id)).to be_nil
       end
 
       it 'creates new subscription even if cancellation fails' do
         expect(Stripe::Subscription).to receive(:cancel).and_raise(Stripe::StripeError.new('Cancel failed'))
-        
+
         result = service.create_subscription(stripe_subscription_id)
         expect(result).to be_a(Subscription)
       end
@@ -200,7 +200,7 @@ RSpec.describe SubscriptionService, type: :service do
     it 'handles ActiveRecord errors' do
       allow(user).to receive(:create_subscription!).and_raise(ActiveRecord::RecordInvalid.new(Subscription.new))
       expect(Rails.logger).to receive(:error).with(/Failed to create subscription record:/)
-      
+
       expect(service.create_subscription(stripe_subscription_id)).to be_nil
     end
   end
@@ -285,7 +285,7 @@ RSpec.describe SubscriptionService, type: :service do
 
       it 'syncs status from Stripe' do
         expect(service.sync_subscription_status).to be true
-        
+
         subscription.reload
         expect(subscription.status).to eq('past_due')
         expect(subscription.current_period_end).to be_between(13.days.from_now, 15.days.from_now)
@@ -294,14 +294,14 @@ RSpec.describe SubscriptionService, type: :service do
 
       it 'returns false when stripe subscription cannot be retrieved' do
         allow(service).to receive(:retrieve_stripe_subscription).and_return(nil)
-        
+
         expect(service.sync_subscription_status).to be false
       end
 
       it 'returns false when Stripe API fails' do
         allow(service).to receive(:retrieve_stripe_subscription).and_raise(Stripe::StripeError.new('API error'))
         expect(Rails.logger).to receive(:error).with('Failed to sync subscription status: API error')
-        
+
         expect(service.sync_subscription_status).to be false
       end
     end
@@ -312,7 +312,7 @@ RSpec.describe SubscriptionService, type: :service do
       it 'retrieves subscription from Stripe' do
         stripe_subscription = double('Stripe::Subscription')
         expect(Stripe::Subscription).to receive(:retrieve).with('sub_123').and_return(stripe_subscription)
-        
+
         result = service.send(:retrieve_stripe_subscription, 'sub_123')
         expect(result).to eq(stripe_subscription)
       end
@@ -321,7 +321,7 @@ RSpec.describe SubscriptionService, type: :service do
         expect(Stripe::Subscription).to receive(:retrieve)
           .and_raise(Stripe::InvalidRequestError.new('Not found', 'subscription'))
         expect(Rails.logger).to receive(:error).with('Failed to retrieve subscription: Not found')
-        
+
         result = service.send(:retrieve_stripe_subscription, 'sub_123')
         expect(result).to be_nil
       end

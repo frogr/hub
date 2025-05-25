@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Subscriptions', type: :request do
   let(:user) { create(:user) }
-  
+
   before do
     sign_in user
   end
@@ -19,7 +19,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
     it 'displays all plans ordered by amount' do
       get subscriptions_path
-      
+
       expect(response.body).to include(free_plan.name)
       expect(response.body).to include(basic_plan.name)
       expect(response.body).to include(premium_plan.name)
@@ -91,7 +91,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
         it 'redirects to Stripe checkout' do
           post subscriptions_path(plan_id: plan.id)
-          
+
           expect(response).to have_http_status(:see_other)
           expect(response).to redirect_to('https://checkout.stripe.com/pay/cs_123')
         end
@@ -113,7 +113,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
         it 'redirects to subscriptions with error' do
           post subscriptions_path(plan_id: plan.id)
-          
+
           expect(response).to redirect_to(subscriptions_path)
           expect(flash[:alert]).to eq('Unable to create checkout session. Please try again.')
         end
@@ -127,7 +127,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
       it 'redirects to subscriptions index' do
         post subscriptions_path
-        
+
         expect(response).to redirect_to(subscriptions_path)
         expect(flash[:alert]).to eq('Please select a plan')
       end
@@ -149,7 +149,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
       it 'redirects with success message' do
         post cancel_subscription_path(subscription)
-        
+
         expect(response).to redirect_to(subscriptions_path)
         expect(flash[:notice]).to eq('Your subscription will be cancelled at the end of the billing period.')
       end
@@ -162,7 +162,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
       it 'redirects with error message' do
         post cancel_subscription_path(subscription)
-        
+
         expect(response).to redirect_to(subscriptions_path)
         expect(flash[:alert]).to eq('Unable to cancel subscription. Please try again.')
       end

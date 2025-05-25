@@ -4,14 +4,14 @@ FactoryBot.define do
     amount { 1999 } # $19.99
     currency { "usd" }
     interval { "month" }
-    features { ["Feature 1", "Feature 2", "Feature 3"] }
+    features { [ "Feature 1", "Feature 2", "Feature 3" ] }
     trial_days { 0 }
     stripe_price_id { nil }
 
     trait :free do
       name { "Free Plan" }
       amount { 0 }
-      features { ["Basic feature"] }
+      features { [ "Basic feature" ] }
     end
 
     trait :yearly do

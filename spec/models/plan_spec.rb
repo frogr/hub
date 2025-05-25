@@ -12,7 +12,7 @@ RSpec.describe Plan, type: :model do
     it { should validate_presence_of(:currency) }
     it { should validate_presence_of(:interval) }
     it { should validate_inclusion_of(:interval).in_array(%w[month year]) }
-    
+
     it 'validates uniqueness of stripe_price_id' do
       plan = create(:plan, stripe_price_id: 'price_123')
       duplicate_plan = build(:plan, stripe_price_id: 'price_123')
@@ -28,9 +28,9 @@ RSpec.describe Plan, type: :model do
 
   describe 'serialization' do
     it 'serializes features as an array' do
-      plan = create(:plan, features: ['Feature 1', 'Feature 2'])
+      plan = create(:plan, features: [ 'Feature 1', 'Feature 2' ])
       plan.reload
-      expect(plan.features).to eq(['Feature 1', 'Feature 2'])
+      expect(plan.features).to eq([ 'Feature 1', 'Feature 2' ])
     end
 
     it 'handles empty features array' do

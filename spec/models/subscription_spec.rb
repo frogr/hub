@@ -8,7 +8,7 @@ RSpec.describe Subscription, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of(:status) }
-    
+
     it 'validates uniqueness of stripe_subscription_id' do
       subscription = create(:subscription, stripe_subscription_id: 'sub_123')
       duplicate_subscription = build(:subscription, stripe_subscription_id: 'sub_123')
@@ -46,7 +46,7 @@ RSpec.describe Subscription, type: :model do
       it 'returns active subscriptions' do
         active = create(:subscription, status: 'active')
         canceled = create(:subscription, :canceled)
-        
+
         expect(Subscription.active_or_trialing).to include(active)
         expect(Subscription.active_or_trialing).not_to include(canceled)
       end
@@ -54,7 +54,7 @@ RSpec.describe Subscription, type: :model do
       it 'returns trialing subscriptions' do
         trialing = create(:subscription, :trialing)
         past_due = create(:subscription, :past_due)
-        
+
         expect(Subscription.active_or_trialing).to include(trialing)
         expect(Subscription.active_or_trialing).not_to include(past_due)
       end
@@ -63,7 +63,7 @@ RSpec.describe Subscription, type: :model do
         active = create(:subscription, status: 'active')
         trialing = create(:subscription, :trialing)
         canceled = create(:subscription, :canceled)
-        
+
         results = Subscription.active_or_trialing
         expect(results).to include(active, trialing)
         expect(results).not_to include(canceled)
