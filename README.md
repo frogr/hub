@@ -1,4 +1,3 @@
-[![CI](https://github.com/frogr/hub/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/frogr/hub/actions/workflows/ci.yml)
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 [![Rails 8.0.2 · Ruby 3.4.4](https://img.shields.io/badge/Rails-8.0.2-blue?logo=ruby-on-rails)](https://rubyonrails.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
