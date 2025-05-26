@@ -1,0 +1,71 @@
+# Hub Configuration
+# This file contains all customizable settings for your Hub application
+# Run `bin/regenerate_app` after modifying to apply changes
+
+app:
+  name: "Hub"
+  class_name: "Hub"
+  tagline: "Ship your Rails app faster"
+  description: "The fastest way to launch your SaaS"
+  
+branding:
+  logo_text: "Hub"
+  footer_text: "© 2024 Hub. All rights reserved."
+  support_email: "support@example.com"
+  
+products:
+  - name: "Starter"
+    stripe_price_id: "price_starter"
+    price: 29
+    billing_period: "month"
+    features:
+      - "Up to 10 users"
+      - "Basic features"
+      - "Email support"
+  - name: "Pro"
+    stripe_price_id: "price_pro"
+    price: 99
+    billing_period: "month"
+    features:
+      - "Unlimited users"
+      - "Advanced features"
+      - "Priority support"
+      - "API access"
+  - name: "Enterprise"
+    stripe_price_id: "price_enterprise"
+    price: 299
+    billing_period: "month"
+    features:
+      - "Everything in Pro"
+      - "Custom integrations"
+      - "Dedicated support"
+      - "SLA guarantee"
+      
+design:
+  # Colors (hex values)
+  primary_color: "#3B82F6"      # Blue
+  secondary_color: "#10B981"    # Green
+  accent_color: "#F59E0B"       # Amber
+  danger_color: "#EF4444"       # Red
+  warning_color: "#F59E0B"      # Amber
+  info_color: "#3B82F6"         # Blue
+  success_color: "#10B981"      # Green
+  
+  # Typography
+  font_family: "Inter"
+  heading_font_family: "Inter"
+  
+  # Spacing and sizing
+  border_radius: "0.375rem"     # Tailwind rounded-md
+  
+# Feature flags
+features:
+  passwordless_auth: true
+  stripe_payments: true
+  admin_panel: true
+  
+# SEO and metadata
+seo:
+  default_title_suffix: " | Hub"
+  default_description: "Build and launch your SaaS faster with Hub"
+  og_image: "/og-image.png"

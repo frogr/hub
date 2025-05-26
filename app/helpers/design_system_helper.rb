@@ -110,6 +110,53 @@ module DesignSystemHelper
     classes.join(" ")
   end
 
+  # CSS Variables from Configuration
+  def design_system_css_variables
+    config = Hub::Config.current
+
+    content_tag(:style) do
+      <<~CSS.html_safe
+        :root {
+          --color-primary: #{config.primary_color};
+          --color-secondary: #{config.secondary_color};
+          --color-accent: #{config.accent_color};
+          --color-danger: #{config.danger_color};
+          --color-warning: #{config.warning_color};
+          --color-info: #{config.info_color};
+          --color-success: #{config.success_color};
+          --font-family: #{config.font_family};
+          --font-family-heading: #{config.heading_font_family};
+          --border-radius: #{config.border_radius};
+        }
+      CSS
+    end
+  end
+
+  # App name and branding helpers
+  def app_name
+    Hub::Config.current.app_name
+  end
+
+  def app_tagline
+    Hub::Config.current.app_tagline
+  end
+
+  def app_description
+    Hub::Config.current.app_description
+  end
+
+  def logo_text
+    Hub::Config.current.logo_text
+  end
+
+  def footer_text
+    Hub::Config.current.footer_text
+  end
+
+  def support_email
+    Hub::Config.current.support_email
+  end
+
   private
 
   def btn_size_class(size)

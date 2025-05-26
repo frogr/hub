@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require_relative "../config/environment"
+require "optparse"
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/regenerate_app [options]"
+
+  opts.on("-d", "--dry-run", "Run without making any changes") do
+    options[:dry_run] = true
+  end
+
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+begin
+  success = Hub::Generator.run!(options)
+  exit(success ? 0 : 1)
+rescue StandardError => e
+  puts "ERROR: #{e.message}"
+  puts e.backtrace.first(10).join("\n") if ENV["DEBUG"]
+  exit 1
+end
