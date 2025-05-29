@@ -27,7 +27,7 @@ gem "devise"
 gem "passwordless"
 
 # Payment processing
-gem "stripe", "~> 13.0"
+gem "stripe", "~> 15.2"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
