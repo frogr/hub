@@ -9,7 +9,7 @@
   </div>
 
   <% if @config.errors.any? %>
-    <div class="<%= DesignSystemHelper::ALERT_ERROR %> mb-8">
+    <div class="<%= alert_error_class %> mb-8" style="<%= alert_error_style %>">
       <h3 class="font-semibold mb-2">Please fix the following errors:</h3>
       <ul class="list-disc list-inside">
         <% @config.errors.full_messages.each do |message| %>

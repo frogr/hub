@@ -5,15 +5,15 @@ app:
   tagline: Ship faster
   description: Rails SaaS starter
 design:
-  primary_color: "#741a5c"
-  secondary_color: "#43b690"
+  primary_color: "#FF0000"
+  secondary_color: "#10B981"
   accent_color: "#F59E0B"
   danger_color: "#EF4444"
   warning_color: "#F59E0B"
   info_color: "#3B82F6"
-  success_color: "#ffffff"
+  success_color: "#10B981"
   font_family: Inter
-  heading_font_family: ''
+  heading_font_family:
   border_radius: 0.375rem
 branding:
   logo_text: Hub
@@ -27,4 +27,18 @@ seo:
   default_title_suffix:
   default_description:
   og_image: "/og-image.png"
-products: []
+products:
+- name: Basic
+  stripe_price_id: price_123
+  price: 10
+  billing_period: month
+  features:
+  - Feature 1
+  - Feature 2
+- name: Pro
+  stripe_price_id: price_456
+  price: 20
+  billing_period: month
+  features:
+  - All Basic
+  - Pro Feature

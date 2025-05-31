@@ -36,6 +36,7 @@ module DesignSystemHelper
 
   # Alert Classes - Base styles only, colors applied dynamically
   ALERT_BASE = "p-6 rounded-xl border backdrop-blur-sm #{TEXT_BODY_SM}"
+  ALERT_ERROR = ALERT_BASE
 
   # Form Classes - Large, Readable
   FORM_INPUT = "w-full px-6 py-4 #{TEXT_BODY} bg-primary-800/50 border border-primary-600/50 rounded-xl shadow-sm transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary-500/30 focus:border-primary-500 placeholder:text-neutral-500 #{TEXT_PRIMARY} backdrop-blur-sm"
@@ -45,6 +46,9 @@ module DesignSystemHelper
   # Badge Classes - Better Contrast
   BADGE_BASE = "inline-flex items-center px-4 py-2 #{TEXT_CAPTION} font-semibold rounded-full"
   BADGE_PRIMARY = "#{BADGE_BASE} bg-primary-600/50 #{TEXT_PRIMARY} border border-primary-500/50"
+  BADGE_SUCCESS = "#{BADGE_BASE} bg-success/20 text-success border border-success/30"
+  BADGE_WARNING = "#{BADGE_BASE} bg-warning/20 text-warning border border-warning/30"
+  BADGE_ERROR = "#{BADGE_BASE} bg-danger/20 text-danger border border-danger/30"
 
   # Link Classes - High Contrast
   LINK = "#{TEXT_ACCENT} underline decoration-accent-300 decoration-2 underline-offset-2 hover:decoration-accent-200 hover:text-accent-100 transition-colors duration-200 #{TEXT_BODY_SM}"
