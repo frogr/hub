@@ -223,15 +223,15 @@ module DesignSystemHelper
 
   def hex_to_rgba(hex_color, alpha)
     return "rgba(0,0,0,#{alpha})" unless hex_color.present?
-    
+
     # Remove # if present
     hex = hex_color.delete("#")
-    
+
     # Convert to RGB
     r = hex[0..1].to_i(16)
     g = hex[2..3].to_i(16)
     b = hex[4..5].to_i(16)
-    
+
     "rgba(#{r}, #{g}, #{b}, #{alpha})"
   end
 

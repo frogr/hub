@@ -99,7 +99,7 @@ RSpec.describe Hub::Config, type: :model do
       expect(config.save).to be true
       expect(File.exist?(temp_file)).to be true
 
-      saved_data = YAML.load_file(temp_file, permitted_classes: [Symbol, Date, Time, ActiveSupport::HashWithIndifferentAccess])
+      saved_data = YAML.load_file(temp_file, permitted_classes: [ Symbol, Date, Time, ActiveSupport::HashWithIndifferentAccess ])
       expect(saved_data["app"]["name"]).to eq("TestApp")
     end
 

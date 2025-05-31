@@ -82,7 +82,7 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
 
       it "updates the configuration" do
         patch hub_admin_configuration_path, params: valid_params
-        
+
         expect(response).to redirect_to(hub_admin_configuration_path)
         expect(config.app["name"]).to eq("MyApp")
       end
@@ -97,7 +97,7 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
       context "when apply_changes is true" do
         let(:generator_service) { instance_double(GeneratorExecutionService) }
         let(:success_result) { GeneratorExecutionService::Result.new(success: true, message: "Success") }
-        let(:failure_result) { GeneratorExecutionService::Result.new(success: false, message: "Failed", errors: ["Error"]) }
+        let(:failure_result) { GeneratorExecutionService::Result.new(success: false, message: "Failed", errors: [ "Error" ]) }
 
         before do
           allow(GeneratorExecutionService).to receive(:new).and_return(generator_service)
@@ -105,7 +105,7 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
 
         it "runs the generator" do
           allow(generator_service).to receive(:execute).and_return(success_result)
-          
+
           patch hub_admin_configuration_path, params: valid_params.merge(apply_changes: "true")
 
           expect(generator_service).to have_received(:execute)

@@ -50,14 +50,14 @@ module Hub
       def update_view_file(path)
         content = File.read(path)
         original_content = content.dup
-        
+
         # Sort replacements by pattern length (longest first) to avoid conflicts
         sorted_replacements = replacements.sort_by { |pattern, _| -pattern.length }
-        
+
         sorted_replacements.each do |pattern, replacement|
           content.gsub!(pattern, replacement)
         end
-        
+
         if content != original_content
           write_file(path, content)
         end

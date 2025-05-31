@@ -18,7 +18,7 @@ class ConfigurationPersistenceService
   def load
     return default_config unless File.exist?(config_path)
 
-    loaded_config = YAML.load_file(config_path, permitted_classes: [Symbol, Date, Time, ActiveSupport::HashWithIndifferentAccess])
+    loaded_config = YAML.load_file(config_path, permitted_classes: [ Symbol, Date, Time, ActiveSupport::HashWithIndifferentAccess ])
     config.assign_attributes(loaded_config)
     config
   rescue StandardError => e
@@ -40,7 +40,7 @@ class ConfigurationPersistenceService
     # Convert to plain hash to avoid YAML serialization issues
     deep_stringify_keys(config.attributes)
   end
-  
+
   def deep_stringify_keys(hash)
     hash.transform_keys(&:to_s).transform_values do |value|
       case value
