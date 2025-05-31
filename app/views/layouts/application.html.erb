@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Hub" %></title>
+    <title><%= content_for(:title) || app_name %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -21,6 +21,9 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    
+    <%# Design system CSS variables from configuration %>
+    <%= design_system_css_variables %>
   </head>
 
   <body class="bg-primary-900 text-neutral-100 antialiased min-h-screen flex flex-col">
@@ -32,7 +35,7 @@
               <div class="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-200">
                 <span class="<%= DesignSystemHelper::TEXT_BODY %> font-bold <%= DesignSystemHelper::TEXT_PRIMARY %>">H</span>
               </div>
-              <span class="<%= DesignSystemHelper::TEXT_SUBHEADING %> font-bold <%= DesignSystemHelper::TEXT_PRIMARY %>">Hub</span>
+              <span class="<%= DesignSystemHelper::TEXT_SUBHEADING %> font-bold <%= DesignSystemHelper::TEXT_PRIMARY %>"><%= logo_text %></span>
             <% end %>
             <div class="hidden md:flex items-center space-x-2">
               <%= link_to "Pricing", pricing_path, class: DesignSystemHelper::NAV_LINK %>
@@ -40,6 +43,7 @@
                 <%= link_to "Subscription", subscriptions_path, class: DesignSystemHelper::NAV_LINK %>
                 <% if current_user.admin? %>
                   <%= link_to "Admin", admin_users_path, class: DesignSystemHelper::NAV_LINK %>
+                  <%= link_to "Config", hub_admin_configuration_path, class: DesignSystemHelper::NAV_LINK %>
                 <% end %>
               <% end %>
             </div>
@@ -68,7 +72,7 @@
       <% if flash[:notice] || flash[:alert] %>
         <div class="max-w-7xl mx-auto px-4 pt-4">
           <% if flash[:notice] %>
-            <div class="<%= DesignSystemHelper::ALERT_SUCCESS %> flex items-center space-x-3">
+            <div class="<%= alert_success_class %> flex items-center space-x-3" style="<%= alert_success_style %>">
               <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
               </svg>
@@ -77,7 +81,7 @@
           <% end %>
           
           <% if flash[:alert] %>
-            <div class="<%= DesignSystemHelper::ALERT_ERROR %> flex items-center space-x-3">
+            <div class="<%= alert_error_class %> flex items-center space-x-3" style="<%= alert_error_style %>">
               <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
               </svg>
@@ -97,7 +101,7 @@
             <div class="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow">
               <span class="text-white font-bold">H</span>
             </div>
-            <span class="<%= DesignSystemHelper::TEXT_CAPTION %> <%= DesignSystemHelper::TEXT_MUTED %>">© <%= Date.current.year %> Hub. All rights reserved.</span>
+            <span class="<%= DesignSystemHelper::TEXT_CAPTION %> <%= DesignSystemHelper::TEXT_MUTED %>"><%= footer_text %></span>
           </div>
           <div class="flex items-center space-x-6">
             <%= link_to "Privacy", "#", class: DesignSystemHelper::LINK_SUBTLE %>

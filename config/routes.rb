@@ -6,6 +6,10 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  namespace :hub_admin do
+    resource :configuration, only: [ :show, :update ]
+  end
   devise_for :users
 
   get "pricing", to: "pricing#index", as: :pricing
