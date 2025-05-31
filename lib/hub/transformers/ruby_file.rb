@@ -15,7 +15,7 @@ module Hub
 
       def transform_file(path)
         # Skip this transformer's own files
-        return if path.include?("lib/hub/")
+        return if path.to_s.include?("lib/hub/")
 
         content = read_file(path)
         original_content = content.dup
@@ -38,6 +38,30 @@ module Hub
         end
       end
 
+      def update_ruby_file(path)
+        content = File.read(path)
+        original_content = content.dup
+        
+        replacements.each do |pattern, replacement|
+          content.gsub!(pattern, replacement)
+        end
+        
+        if content != original_content
+          write_file(path, content)
+        end
+      end
+
+      def replacements
+        {
+          '"Welcome to Hub"' => "\"Welcome to #{config.app_name}\"",
+          '"Hub"' => "\"#{config.app_name}\"",
+          "'Hub'" => "'#{config.app_name}'",
+          "module Hub" => "module #{config.app_class_name}",
+          "Hub::" => "#{config.app_class_name}::",
+          "class Hub::" => "class #{config.app_class_name}::"
+        }
+      end
+
       def build_replacements(old_name, new_name)
         replacements = {}
 
@@ -54,6 +78,10 @@ module Hub
 
         # Method calls and references
         replacements[/\b#{old_name}\.([a-z_]+)/] = "#{new_name}.\\1"
+
+        # String references to app name
+        replacements["\"#{old_name}\""] = "\"#{config.app_name}\""
+        replacements["'#{old_name}'"] = "'#{config.app_name}'"
 
         replacements
       end

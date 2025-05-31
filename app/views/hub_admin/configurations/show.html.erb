@@ -19,8 +19,8 @@
     </div>
   <% end %>
 
-  <%= form_with model: @config, url: hub_admin_configuration_path, method: :patch, local: true do |form| %>
-    <!-- App Identity Section -->
+  <!-- App Identity Section -->
+  <%= form_with url: hub_admin_configuration_path, method: :patch, local: true do |form| %>
     <div class="<%= DesignSystemHelper::CARD %> mb-8">
       <div class="<%= DesignSystemHelper::CARD_HEADER %>">
         <h2 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
@@ -50,7 +50,7 @@
             <%= form.label "config[app][tagline]", "Tagline", class: DesignSystemHelper::FORM_LABEL %>
             <%= form.text_field "config[app][tagline]", value: @config.app["tagline"], 
                 class: DesignSystemHelper::FORM_INPUT, 
-                placeholder: "Ship your Rails app faster" %>
+                placeholder: "Ship faster" %>
           </div>
           
           <div class="md:col-span-2">
@@ -58,13 +58,25 @@
             <%= form.text_area "config[app][description]", value: @config.app["description"], 
                 class: DesignSystemHelper::FORM_INPUT, 
                 rows: 3,
-                placeholder: "The fastest way to launch your SaaS" %>
+                placeholder: "Rails SaaS starter" %>
           </div>
+        </div>
+        
+        <div class="flex gap-4 mt-6">
+          <%= form.submit "Save App Identity", class: btn_secondary %>
+          <%= button_tag "Save & Apply Changes", 
+              type: "submit",
+              name: "apply_changes", 
+              value: "true",
+              class: btn_primary,
+              data: { confirm: "This will regenerate your app files. Continue?" } %>
         </div>
       </div>
     </div>
+  <% end %>
 
-    <!-- Branding Section -->
+  <!-- Branding Section -->
+  <%= form_with url: hub_admin_configuration_path, method: :patch, local: true do |form| %>
     <div class="<%= DesignSystemHelper::CARD %> mb-8">
       <div class="<%= DesignSystemHelper::CARD_HEADER %>">
         <h2 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
@@ -94,10 +106,22 @@
                 placeholder: "© 2024 Hub. All rights reserved." %>
           </div>
         </div>
+        
+        <div class="flex gap-4 mt-6">
+          <%= form.submit "Save Branding", class: btn_secondary %>
+          <%= button_tag "Save & Apply Changes", 
+              type: "submit",
+              name: "apply_changes", 
+              value: "true",
+              class: btn_primary,
+              data: { confirm: "This will regenerate your app files. Continue?" } %>
+        </div>
       </div>
     </div>
+  <% end %>
 
-    <!-- Design System Section -->
+  <!-- Design System Section -->
+  <%= form_with url: hub_admin_configuration_path, method: :patch, local: true do |form| %>
     <div class="<%= DesignSystemHelper::CARD %> mb-8">
       <div class="<%= DesignSystemHelper::CARD_HEADER %>">
         <h2 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
@@ -193,10 +217,22 @@
                 placeholder: "0.375rem" %>
           </div>
         </div>
+        
+        <div class="flex gap-4 mt-6">
+          <%= form.submit "Save Design System", class: btn_secondary %>
+          <%= button_tag "Save & Apply Changes", 
+              type: "submit",
+              name: "apply_changes", 
+              value: "true",
+              class: btn_primary,
+              data: { confirm: "This will regenerate your app files. Continue?" } %>
+        </div>
       </div>
     </div>
+  <% end %>
 
-    <!-- Products Section -->
+  <!-- Products Section -->
+  <%= form_with url: hub_admin_configuration_path, method: :patch, local: true do |form| %>
     <div class="<%= DesignSystemHelper::CARD %> mb-8">
       <div class="<%= DesignSystemHelper::CARD_HEADER %>">
         <h2 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
@@ -251,10 +287,22 @@
         <button type="button" id="add-product" class="mt-6 <%= DesignSystemHelper::BTN_SECONDARY %>">
           Add Product
         </button>
+        
+        <div class="flex gap-4 mt-6">
+          <%= form.submit "Save Products", class: btn_secondary %>
+          <%= button_tag "Save & Apply Changes", 
+              type: "submit",
+              name: "apply_changes", 
+              value: "true",
+              class: btn_primary,
+              data: { confirm: "This will regenerate your app files. Continue?" } %>
+        </div>
       </div>
     </div>
+  <% end %>
 
-    <!-- Features Section -->
+  <!-- Features Section -->
+  <%= form_with url: hub_admin_configuration_path, method: :patch, local: true do |form| %>
     <div class="<%= DesignSystemHelper::CARD %> mb-8">
       <div class="<%= DesignSystemHelper::CARD_HEADER %>">
         <h2 class="<%= DesignSystemHelper::TEXT_SUBHEADING %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
@@ -290,18 +338,17 @@
             </span>
           </label>
         </div>
+        
+        <div class="flex gap-4 mt-6">
+          <%= form.submit "Save Features", class: btn_secondary %>
+          <%= button_tag "Save & Apply Changes", 
+              type: "submit",
+              name: "apply_changes", 
+              value: "true",
+              class: btn_primary,
+              data: { confirm: "This will regenerate your app files. Continue?" } %>
+        </div>
       </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="flex flex-col sm:flex-row gap-4">
-      <%= form.submit "Save Configuration", class: btn_secondary(:lg) %>
-      
-      <%= form.submit "Apply Changes", 
-          name: "apply_changes", 
-          value: "true",
-          class: btn_primary(:lg),
-          data: { confirm: "This will regenerate your app files. Continue?" } %>
     </div>
   <% end %>
 </div>
@@ -312,18 +359,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const addProductBtn = document.getElementById('add-product');
   const productsContainer = document.getElementById('products-container');
   
-  addProductBtn.addEventListener('click', function() {
-    const productCount = productsContainer.querySelectorAll('.product-item').length;
-    const newProduct = createProductElement(productCount);
-    productsContainer.appendChild(newProduct);
-  });
-  
-  // Remove product functionality
-  productsContainer.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-product')) {
-      e.target.closest('.product-item').remove();
-    }
-  });
+  if (addProductBtn && productsContainer) {
+    addProductBtn.addEventListener('click', function() {
+      const productCount = productsContainer.querySelectorAll('.product-item').length;
+      const newProduct = createProductElement(productCount);
+      productsContainer.appendChild(newProduct);
+    });
+    
+    // Remove product functionality
+    productsContainer.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-product')) {
+        e.target.closest('.product-item').remove();
+      }
+    });
+  }
   
   function createProductElement(index) {
     const div = document.createElement('div');

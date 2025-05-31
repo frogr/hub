@@ -4,40 +4,27 @@ class HubAdmin::ConfigurationsController < HubAdmin::BaseController
   end
 
   def update
-    @config = Hub::Config.current
+    result = ConfigurationUpdateService.new(update_params, Hub::Config.current).execute
 
-    # Update config attributes
-    @config.app = config_params[:app] if config_params[:app].present?
-    @config.branding = config_params[:branding] if config_params[:branding].present?
-    @config.design = config_params[:design] if config_params[:design].present?
-    @config.features = config_params[:features] if config_params[:features].present?
-    @config.seo = config_params[:seo] if config_params[:seo].present?
-
-    # Handle products separately to manage arrays properly
-    if params[:products].present?
-      @config.products = build_products_array
-    end
-
-    if @config.save
-      # Run the generator to apply changes
-      if params[:apply_changes] == "true"
-        success = Hub::Generator.run!
-        if success
-          redirect_to hub_admin_configuration_path, notice: "Configuration updated and changes applied successfully!"
-        else
-          redirect_to hub_admin_configuration_path, alert: "Configuration saved but failed to apply changes. Check the logs."
-        end
-      else
-        redirect_to hub_admin_configuration_path, notice: "Configuration saved. Click 'Apply Changes' to regenerate your app."
-      end
+    if result.success?
+      handle_success(result)
     else
-      render :show, status: :unprocessable_entity
+      handle_failure(result)
     end
   end
 
   private
 
+  def update_params
+    params.permit(:apply_changes).merge(
+      config_attributes: config_params,
+      products: products_params
+    )
+  end
+
   def config_params
+    return {} unless params[:config].present?
+
     params.require(:config).permit(
       app: [ :name, :class_name, :tagline, :description ],
       branding: [ :logo_text, :footer_text, :support_email ],
@@ -49,19 +36,32 @@ class HubAdmin::ConfigurationsController < HubAdmin::BaseController
     )
   end
 
-  def build_products_array
-    products = []
-    params[:products].each do |index, product_params|
-      next if product_params[:name].blank?
+  def products_params
+    return {} unless params[:products].present?
 
-      products << {
-        "name" => product_params[:name],
-        "stripe_price_id" => product_params[:stripe_price_id],
-        "price" => product_params[:price].to_i,
-        "billing_period" => product_params[:billing_period] || "month",
-        "features" => (product_params[:features] || "").split("\n").map(&:strip).reject(&:blank?)
-      }
+    params.require(:products).permit!
+  end
+
+  def handle_success(result)
+    # Reload to ensure we have the latest saved config
+    Hub::Config.reload!
+    message = build_success_message
+    redirect_to hub_admin_configuration_path, notice: message
+  end
+
+  def handle_failure(result)
+    # Force reload from file to ensure we have a valid config
+    Hub::Config.reload!
+    @config = Hub::Config.current
+    flash.now[:alert] = result.errors.join(", ")
+    render :show, status: :unprocessable_entity
+  end
+
+  def build_success_message
+    if params[:apply_changes] == "true"
+      "Configuration updated and changes applied successfully!"
+    else
+      "Configuration saved. Click 'Apply Changes' to regenerate your app."
     end
-    products
   end
 end

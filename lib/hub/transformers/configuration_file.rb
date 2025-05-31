@@ -4,6 +4,12 @@ module Hub
       def transform
         log "Transforming configuration files..."
 
+        config_files = find_files("config/**/*.rb")
+
+        config_files.each do |file|
+          update_config_file(file)
+        end
+
         # Update environment files
         update_environment_files
 
@@ -19,6 +25,21 @@ module Hub
 
       private
 
+      def update_config_file(path)
+        replace_in_file(path, replacements)
+      end
+
+      def replacements
+        {
+          '"Hub"' => "\"#{config.app_name}\"",
+          "'Hub'" => "'#{config.app_name}'",
+          "module Hub" => "module #{config.app_class_name}",
+          "Hub::" => "#{config.app_class_name}::",
+          '"Hub Application"' => "\"#{config.app_name} Application\"",
+          '"Hub Development"' => "\"#{config.app_name} Development\""
+        }
+      end
+
       def update_environment_files
         %w[development.rb production.rb test.rb].each do |env_file|
           path = Rails.root.join("config/environments", env_file)
@@ -26,7 +47,9 @@ module Hub
 
           replace_in_file(path, {
             "config.application_name = \"Hub\"" => "config.application_name = \"#{config.app_name}\"",
-            "Hub Application" => "#{config.app_name} Application"
+            "config.app_name = \"Hub\"" => "config.app_name = \"#{config.app_name}\"",
+            "Hub Application" => "#{config.app_name} Application",
+            "Hub Development" => "#{config.app_name} Development"
           })
         end
       end
@@ -48,43 +71,13 @@ module Hub
       end
 
       def update_database_config
-        path = Rails.root.join("config/database.yml")
-        return unless File.exist?(path)
-
-        content = read_file(path)
-        original_content = content.dup
-
-        # Update database names
-        old_db_prefix = "hub"
-        new_db_prefix = config.app_name.downcase.gsub(/[^a-z0-9]/, "_")
-
-        if old_db_prefix != new_db_prefix
-          content.gsub!(/database: #{old_db_prefix}_/, "database: #{new_db_prefix}_")
-        end
-
-        if content != original_content
-          write_file(path, content)
-        end
+        # Skip database.yml updates - database names should remain as hub_*
+        # to avoid breaking existing deployments and development environments
       end
 
       def update_cable_config
-        path = Rails.root.join("config/cable.yml")
-        return unless File.exist?(path)
-
-        content = read_file(path)
-        original_content = content.dup
-
-        # Update channel prefix
-        old_prefix = "hub"
-        new_prefix = config.app_name.downcase.gsub(/[^a-z0-9]/, "_")
-
-        if old_prefix != new_prefix
-          content.gsub!(/channel_prefix: #{old_prefix}_/, "channel_prefix: #{new_prefix}_")
-        end
-
-        if content != original_content
-          write_file(path, content)
-        end
+        # Skip cable.yml updates - channel prefixes should remain as hub_*
+        # to avoid breaking existing deployments
       end
     end
   end

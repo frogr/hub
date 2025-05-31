@@ -12,9 +12,9 @@ module DesignSystemHelper
   TEXT_SECONDARY = "text-neutral-100"   # Slightly off-white
   TEXT_MUTED = "text-neutral-400"       # Muted but readable
   TEXT_ACCENT = "text-accent-200"       # Accent color text
-  TEXT_SUCCESS = "text-green-400"       # Success text
-  TEXT_WARNING = "text-yellow-400"      # Warning text
-  TEXT_ERROR = "text-red-400"           # Error text
+  TEXT_SUCCESS = "text-success"         # Success text using CSS variable
+  TEXT_WARNING = "text-warning"         # Warning text using CSS variable
+  TEXT_ERROR = "text-danger"            # Error text using CSS variable
 
   # Button Classes
   BTN_BASE = "inline-flex items-center justify-center px-8 py-4 #{TEXT_BODY_SM} font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-primary-900 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98]"
@@ -34,12 +34,8 @@ module DesignSystemHelper
   CARD_BODY = "p-8 md:p-10"
   CARD_HEADER = "px-8 py-6 md:px-10 md:py-8 border-b border-primary-700/50 bg-gradient-to-b from-primary-700/20 to-transparent"
 
-  # Alert Classes - Better Contrast
+  # Alert Classes - Base styles only, colors applied dynamically
   ALERT_BASE = "p-6 rounded-xl border backdrop-blur-sm #{TEXT_BODY_SM}"
-  ALERT_SUCCESS = "#{ALERT_BASE} bg-green-900/30 border-green-600/30 #{TEXT_SUCCESS}"
-  ALERT_ERROR = "#{ALERT_BASE} bg-red-900/30 border-red-600/30 #{TEXT_ERROR}"
-  ALERT_WARNING = "#{ALERT_BASE} bg-yellow-900/30 border-yellow-600/30 #{TEXT_WARNING}"
-  ALERT_INFO = "#{ALERT_BASE} bg-blue-900/30 border-blue-600/30 text-blue-400"
 
   # Form Classes - Large, Readable
   FORM_INPUT = "w-full px-6 py-4 #{TEXT_BODY} bg-primary-800/50 border border-primary-600/50 rounded-xl shadow-sm transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary-500/30 focus:border-primary-500 placeholder:text-neutral-500 #{TEXT_PRIMARY} backdrop-blur-sm"
@@ -49,8 +45,6 @@ module DesignSystemHelper
   # Badge Classes - Better Contrast
   BADGE_BASE = "inline-flex items-center px-4 py-2 #{TEXT_CAPTION} font-semibold rounded-full"
   BADGE_PRIMARY = "#{BADGE_BASE} bg-primary-600/50 #{TEXT_PRIMARY} border border-primary-500/50"
-  BADGE_SUCCESS = "#{BADGE_BASE} bg-green-800/50 #{TEXT_SUCCESS} border border-green-600/50"
-  BADGE_WARNING = "#{BADGE_BASE} bg-yellow-800/50 #{TEXT_WARNING} border border-yellow-600/50"
 
   # Link Classes - High Contrast
   LINK = "#{TEXT_ACCENT} underline decoration-accent-300 decoration-2 underline-offset-2 hover:decoration-accent-200 hover:text-accent-100 transition-colors duration-200 #{TEXT_BODY_SM}"
@@ -117,9 +111,32 @@ module DesignSystemHelper
     content_tag(:style) do
       <<~CSS.html_safe
         :root {
-          --color-primary: #{config.primary_color};
+          /* Primary color shades */
+          --color-primary-500: #{config.primary_color};
+          --color-primary-50: #{lighten_color(config.primary_color, 90)};
+          --color-primary-100: #{lighten_color(config.primary_color, 80)};
+          --color-primary-200: #{lighten_color(config.primary_color, 60)};
+          --color-primary-300: #{lighten_color(config.primary_color, 40)};
+          --color-primary-400: #{lighten_color(config.primary_color, 20)};
+          --color-primary-600: #{darken_color(config.primary_color, 20)};
+          --color-primary-700: #{darken_color(config.primary_color, 30)};
+          --color-primary-800: #{darken_color(config.primary_color, 40)};
+          --color-primary-900: #{darken_color(config.primary_color, 50)};
+        #{'  '}
+          /* Accent color shades */
+          --color-accent-500: #{config.accent_color};
+          --color-accent-50: #{lighten_color(config.accent_color, 90)};
+          --color-accent-100: #{lighten_color(config.accent_color, 80)};
+          --color-accent-200: #{lighten_color(config.accent_color, 60)};
+          --color-accent-300: #{lighten_color(config.accent_color, 40)};
+          --color-accent-400: #{lighten_color(config.accent_color, 20)};
+          --color-accent-600: #{darken_color(config.accent_color, 20)};
+          --color-accent-700: #{darken_color(config.accent_color, 30)};
+          --color-accent-800: #{darken_color(config.accent_color, 40)};
+          --color-accent-900: #{darken_color(config.accent_color, 50)};
+        #{'  '}
+          /* Other colors */
           --color-secondary: #{config.secondary_color};
-          --color-accent: #{config.accent_color};
           --color-danger: #{config.danger_color};
           --color-warning: #{config.warning_color};
           --color-info: #{config.info_color};
@@ -157,7 +174,106 @@ module DesignSystemHelper
     Hub::Config.current.support_email
   end
 
+  # Dynamic alert helpers that use CSS variables
+  def alert_success_class
+    ALERT_BASE
+  end
+
+  def alert_error_class
+    ALERT_BASE
+  end
+
+  def alert_warning_class
+    ALERT_BASE
+  end
+
+  def alert_info_class
+    ALERT_BASE
+  end
+
+  def alert_success_style
+    config = Hub::Config.current
+    bg_color = hex_to_rgba(config.success_color, 0.2)
+    border_color = hex_to_rgba(config.success_color, 0.3)
+    "background-color: #{bg_color}; border-color: #{border_color}; color: #{config.success_color};"
+  end
+
+  def alert_error_style
+    config = Hub::Config.current
+    bg_color = hex_to_rgba(config.danger_color, 0.2)
+    border_color = hex_to_rgba(config.danger_color, 0.3)
+    "background-color: #{bg_color}; border-color: #{border_color}; color: #{config.danger_color};"
+  end
+
+  def alert_warning_style
+    config = Hub::Config.current
+    bg_color = hex_to_rgba(config.warning_color, 0.2)
+    border_color = hex_to_rgba(config.warning_color, 0.3)
+    "background-color: #{bg_color}; border-color: #{border_color}; color: #{config.warning_color};"
+  end
+
+  def alert_info_style
+    config = Hub::Config.current
+    bg_color = hex_to_rgba(config.info_color, 0.2)
+    border_color = hex_to_rgba(config.info_color, 0.3)
+    "background-color: #{bg_color}; border-color: #{border_color}; color: #{config.info_color};"
+  end
+
   private
+
+  def hex_to_rgba(hex_color, alpha)
+    return "rgba(0,0,0,#{alpha})" unless hex_color.present?
+    
+    # Remove # if present
+    hex = hex_color.delete("#")
+    
+    # Convert to RGB
+    r = hex[0..1].to_i(16)
+    g = hex[2..3].to_i(16)
+    b = hex[4..5].to_i(16)
+    
+    "rgba(#{r}, #{g}, #{b}, #{alpha})"
+  end
+
+  def lighten_color(hex_color, percent)
+    return hex_color unless hex_color.present?
+
+    # Remove # if present
+    hex = hex_color.delete("#")
+
+    # Convert to RGB
+    r = hex[0..1].to_i(16)
+    g = hex[2..3].to_i(16)
+    b = hex[4..5].to_i(16)
+
+    # Lighten
+    r = [ (r + (255 - r) * percent / 100).round, 255 ].min
+    g = [ (g + (255 - g) * percent / 100).round, 255 ].min
+    b = [ (b + (255 - b) * percent / 100).round, 255 ].min
+
+    # Convert back to hex
+    "#%02x%02x%02x" % [ r, g, b ]
+  end
+
+  def darken_color(hex_color, percent)
+    return hex_color unless hex_color.present?
+
+    # Remove # if present
+    hex = hex_color.delete("#")
+
+    # Convert to RGB
+    r = hex[0..1].to_i(16)
+    g = hex[2..3].to_i(16)
+    b = hex[4..5].to_i(16)
+
+    # Darken
+    r = [ (r * (100 - percent) / 100).round, 0 ].max
+    g = [ (g * (100 - percent) / 100).round, 0 ].max
+    b = [ (b * (100 - percent) / 100).round, 0 ].max
+
+    # Convert back to hex
+    "#%02x%02x%02x" % [ r, g, b ]
+  end
 
   def btn_size_class(size)
     case size

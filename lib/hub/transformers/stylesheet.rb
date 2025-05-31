@@ -30,31 +30,7 @@ module Hub
       private
 
       def transform_file(path)
-        content = read_file(path)
-        original_content = content.dup
-
-        # Replace color values
-        replacements = build_color_replacements
-
-        replacements.each do |pattern, replacement|
-          content.gsub!(pattern, replacement)
-        end
-
-        # Replace font families
-        if config.font_family != "Inter"
-          content.gsub!(/font-family:\s*["']?Inter["']?/i, "font-family: '#{config.font_family}'")
-          content.gsub!(/--font-family:\s*["']?Inter["']?/i, "--font-family: '#{config.font_family}'")
-        end
-
-        # Replace border radius
-        if config.border_radius != "0.375rem"
-          content.gsub!(/border-radius:\s*0\.375rem/, "border-radius: #{config.border_radius}")
-          content.gsub!(/--border-radius:\s*0\.375rem/, "--border-radius: #{config.border_radius}")
-        end
-
-        if content != original_content
-          write_file(path, content)
-        end
+        update_stylesheet(path)
       end
 
       def build_color_replacements
@@ -122,6 +98,104 @@ module Hub
           g: hex[2..3].to_i(16),
           b: hex[4..5].to_i(16)
         }
+      end
+
+      def update_stylesheet(path)
+        content = File.read(path)
+        original_content = content.dup
+        
+        # Apply replacements in specific order to avoid conflicts
+        # 1. CSS variables (most specific, includes full pattern like --color-warning: #F59E0B)
+        css_variable_replacements.each do |pattern, replacement|
+          content.gsub!(pattern, replacement)
+        end
+        
+        # 2. SCSS variables (e.g., $primary-color: #3B82F6)
+        scss_replacements = color_replacements.select { |k, _| k.start_with?('$') }
+        scss_replacements.each do |pattern, replacement|
+          content.gsub!(pattern, replacement)
+        end
+        
+        # 3. Font replacements
+        font_replacements.each do |pattern, replacement|
+          content.gsub!(pattern, replacement)
+        end
+        
+        # 4. Raw hex colors (only if not already replaced)
+        # Skip raw hex replacements to avoid conflicts
+        
+        if content != original_content
+          write_file(path, content)
+        end
+      end
+
+      def css_variable_replacements
+        replacements = {}
+
+        # CSS variable replacements - use exact patterns to avoid conflicts
+        # Must be done in specific order to handle overlapping default values
+        replacements["--color-primary: #3B82F6"] = "--color-primary: #{config.primary_color}"
+        replacements["--color-secondary: #10B981"] = "--color-secondary: #{config.secondary_color}"
+        replacements["--color-danger: #EF4444"] = "--color-danger: #{config.danger_color}"
+        replacements["--color-success: #10B981"] = "--color-success: #{config.success_color}"
+        replacements["--color-info: #3B82F6"] = "--color-info: #{config.info_color}"
+        
+        # Handle accent and warning separately since they have same default
+        if config.accent_color != "#F59E0B" || config.warning_color != "#F59E0B"
+          # Replace them based on context or just do both
+          replacements["--color-accent: #F59E0B"] = "--color-accent: #{config.accent_color}"
+          replacements["--color-warning: #F59E0B"] = "--color-warning: #{config.warning_color}"
+        else
+          replacements["--color-accent: #F59E0B"] = "--color-accent: #{config.accent_color}"
+          replacements["--color-warning: #F59E0B"] = "--color-warning: #{config.warning_color}"
+        end
+        
+        replacements["--font-family: Inter"] = "--font-family: #{config.font_family}"
+        replacements["--font-family-heading: Inter"] = "--font-family-heading: #{config.heading_font_family}"
+        replacements["--border-radius: 0.375rem"] = "--border-radius: #{config.border_radius}"
+
+        replacements
+      end
+
+      def font_replacements
+        replacements = {}
+
+        # Always provide font replacements mapping from default Inter font
+        replacements["Inter"] = config.font_family
+        replacements["font-family: Inter"] = "font-family: #{config.font_family}"
+        replacements["font-family: 'Inter'"] = "font-family: '#{config.font_family}'"
+        replacements['"Inter"'] = "\"#{config.font_family}\""
+        replacements["'Inter'"] = "'#{config.font_family}'"
+        replacements["$font-stack: Inter"] = "$font-stack: #{config.font_family}"
+
+        if config.heading_font_family != "Inter"
+          replacements["font-family-heading: Inter"] = "font-family-heading: #{config.heading_font_family}"
+        end
+
+        replacements
+      end
+
+      def color_replacements
+        replacements = {}
+
+        # Include hex colors and SCSS variable patterns
+        replacements["#3B82F6"] = config.primary_color
+        replacements["$primary-color: #3B82F6"] = "$primary-color: #{config.primary_color}"
+        
+        replacements["#10B981"] = config.secondary_color  
+        replacements["$secondary-color: #10B981"] = "$secondary-color: #{config.secondary_color}"
+        
+        replacements["#EF4444"] = config.danger_color
+        replacements["$danger-color: #EF4444"] = "$danger-color: #{config.danger_color}"
+        
+        # For #F59E0B, only replace if accent color is different from default
+        # This prevents replacing warning color values when they share the same default
+        if config.accent_color != "#F59E0B"
+          replacements["#F59E0B"] = config.accent_color
+          replacements["$accent-color: #F59E0B"] = "$accent-color: #{config.accent_color}"
+        end
+
+        replacements
       end
     end
   end

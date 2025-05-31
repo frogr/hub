@@ -99,12 +99,13 @@ RSpec.describe Hub::Config, type: :model do
       expect(config.save).to be true
       expect(File.exist?(temp_file)).to be true
 
-      saved_data = YAML.load_file(temp_file)
+      saved_data = YAML.load_file(temp_file, permitted_classes: [Symbol, Date, Time, ActiveSupport::HashWithIndifferentAccess])
       expect(saved_data["app"]["name"]).to eq("TestApp")
     end
 
     it "returns false for invalid configuration" do
-      config.app = nil
+      # Setting app to empty hash should make it invalid
+      config.app = {}
       expect(config.save).to be false
       expect(File.exist?(temp_file)).to be false
     end
@@ -122,7 +123,7 @@ RSpec.describe Hub::Config, type: :model do
     end
 
     it "sanitizes app_class_name" do
-      config.app["class_name"] = "Test-App 123"
+      config.app = { "name" => "TestApp", "class_name" => "Test-App 123" }
       expect(config.app_class_name).to eq("TestApp123")
     end
 
@@ -133,8 +134,8 @@ RSpec.describe Hub::Config, type: :model do
 
     it "returns CSS variables" do
       css_vars = config.css_variables
-      expect(css_vars[:"--color-primary"]).to eq("#3B82F6")
-      expect(css_vars[:"--font-family"]).to eq("Inter")
+      expect(css_vars["--color-primary"]).to eq("#3B82F6")
+      expect(css_vars["--font-family"]).to eq("Inter")
     end
 
     it "returns feature flags" do

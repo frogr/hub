@@ -25,10 +25,16 @@ RSpec.describe DesignSystemHelper, type: :helper do
       result = helper.design_system_css_variables
 
       expect(result).to include("<style>")
-      expect(result).to include("--color-primary: #123456")
+      expect(result).to include("--color-primary-500: #123456")
+      expect(result).to include("--color-accent-500: #ABCDEF")
       expect(result).to include("--color-secondary: #654321")
       expect(result).to include("--font-family: CustomFont")
       expect(result).to include("--border-radius: 0.5rem")
+      # Check that color scales are generated
+      expect(result).to include("--color-primary-50:")
+      expect(result).to include("--color-primary-900:")
+      expect(result).to include("--color-accent-50:")
+      expect(result).to include("--color-accent-900:")
     end
   end
 

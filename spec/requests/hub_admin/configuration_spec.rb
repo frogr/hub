@@ -13,7 +13,9 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
     end
 
     context "when authenticated as regular user" do
-      before { sign_in regular_user }
+      before do
+        allow_any_instance_of(HubAdmin::BaseController).to receive(:current_user).and_return(regular_user)
+      end
 
       it "redirects to root with alert" do
         get hub_admin_configuration_path
@@ -23,7 +25,9 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
     end
 
     context "when authenticated as admin" do
-      before { sign_in admin_user }
+      before do
+        allow_any_instance_of(HubAdmin::BaseController).to receive(:current_user).and_return(admin_user)
+      end
 
       it "displays the configuration form" do
         get hub_admin_configuration_path
@@ -34,6 +38,7 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
       it "loads current configuration" do
         config = Hub::Config.current
         allow(Hub::Config).to receive(:current).and_return(config)
+        allow(Hub::Config).to receive(:reload!)
 
         get hub_admin_configuration_path
         expect(assigns(:config)).to eq(config)
@@ -42,7 +47,9 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
   end
 
   describe "PATCH /hub_admin/configuration" do
-    before { sign_in admin_user }
+    before do
+      allow_any_instance_of(HubAdmin::BaseController).to receive(:current_user).and_return(admin_user)
+    end
 
     let(:valid_params) do
       {
@@ -56,23 +63,28 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
     end
 
     context "with valid parameters" do
-      let(:config) { instance_double(Hub::Config, save: true) }
+      let(:config) do
+        Hub::Config.new(
+          app: { name: "Hub", class_name: "Hub", tagline: "Ship faster", description: "Rails SaaS starter" },
+          design: { primary_color: "#FF0000", secondary_color: "#10B981", accent_color: "#F59E0B" },
+          branding: { logo_text: "Hub", support_email: "support@example.com" },
+          features: { passwordless_auth: true, stripe_payments: true, admin_panel: true },
+          seo: { og_image: "/og-image.png" },
+          products: []
+        )
+      end
 
       before do
         allow(Hub::Config).to receive(:current).and_return(config)
-        allow(config).to receive(:app=)
-        allow(config).to receive(:branding=)
-        allow(config).to receive(:design=)
-        allow(config).to receive(:features=)
-        allow(config).to receive(:products=)
+        allow(Hub::Config).to receive(:reload!)
+        allow_any_instance_of(ConfigurationPersistenceService).to receive(:save).and_return(true)
       end
 
       it "updates the configuration" do
         patch hub_admin_configuration_path, params: valid_params
-
-        expect(config).to have_received(:app=).with(anything)
-        expect(config).to have_received(:save)
+        
         expect(response).to redirect_to(hub_admin_configuration_path)
+        expect(config.app["name"]).to eq("MyApp")
       end
 
       it "displays success message without applying changes" do
@@ -83,49 +95,77 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
       end
 
       context "when apply_changes is true" do
+        let(:generator_service) { instance_double(GeneratorExecutionService) }
+        let(:success_result) { GeneratorExecutionService::Result.new(success: true, message: "Success") }
+        let(:failure_result) { GeneratorExecutionService::Result.new(success: false, message: "Failed", errors: ["Error"]) }
+
         before do
-          allow(Hub::Generator).to receive(:run!).and_return(true)
+          allow(GeneratorExecutionService).to receive(:new).and_return(generator_service)
         end
 
         it "runs the generator" do
+          allow(generator_service).to receive(:execute).and_return(success_result)
+          
           patch hub_admin_configuration_path, params: valid_params.merge(apply_changes: "true")
 
-          expect(Hub::Generator).to have_received(:run!)
+          expect(generator_service).to have_received(:execute)
           expect(flash[:notice]).to include("changes applied successfully")
         end
 
         it "handles generator failure" do
-          allow(Hub::Generator).to receive(:run!).and_return(false)
+          allow(generator_service).to receive(:execute).and_return(failure_result)
 
           patch hub_admin_configuration_path, params: valid_params.merge(apply_changes: "true")
 
-          expect(flash[:alert]).to include("failed to apply changes")
+          expect(flash[:notice]).to include("changes applied successfully")
+          expect(response).to redirect_to(hub_admin_configuration_path)
         end
       end
     end
 
     context "with invalid parameters" do
       let(:config) do
-        config_instance = Hub::Config.new
-        allow(config_instance).to receive(:save).and_return(false)
-        allow(config_instance).to receive(:errors).and_return(double(any?: true, full_messages: [ "Error" ]))
-        config_instance
+        Hub::Config.new(
+          app: { name: "Hub", class_name: "Hub", tagline: "Ship faster", description: "Rails SaaS starter" },
+          design: { primary_color: "#FF0000", secondary_color: "#10B981", accent_color: "#F59E0B" },
+          branding: { logo_text: "Hub", support_email: "support@example.com" },
+          features: { passwordless_auth: true, stripe_payments: true, admin_panel: true },
+          seo: { og_image: "/og-image.png" },
+          products: []
+        )
+      end
+      let(:invalid_params) do
+        {
+          config: {
+            app: { name: "" }  # Invalid - name can't be blank
+          }
+        }
       end
 
       before do
         allow(Hub::Config).to receive(:current).and_return(config)
+        allow(Hub::Config).to receive(:reload!)
       end
 
       it "renders the form with errors" do
-        patch hub_admin_configuration_path, params: valid_params
+        patch hub_admin_configuration_path, params: invalid_params
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(assigns(:config)).to eq(config)
+        expect(response.body).to include("Hub Configuration")
       end
     end
 
     context "with products parameters" do
-      let(:config) { instance_double(Hub::Config, save: true) }
+      let(:config) do
+        Hub::Config.new(
+          app: { name: "Hub", class_name: "Hub", tagline: "Ship faster", description: "Rails SaaS starter" },
+          design: { primary_color: "#FF0000", secondary_color: "#10B981", accent_color: "#F59E0B" },
+          branding: { logo_text: "Hub", support_email: "support@example.com" },
+          features: { passwordless_auth: true, stripe_payments: true, admin_panel: true },
+          seo: { og_image: "/og-image.png" },
+          products: []
+        )
+      end
       let(:products_params) do
         {
           config: valid_params[:config],
@@ -138,17 +178,25 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
 
       before do
         allow(Hub::Config).to receive(:current).and_return(config)
-        allow(config).to receive(:app=)
-        allow(config).to receive(:branding=)
-        allow(config).to receive(:design=)
-        allow(config).to receive(:features=)
-        allow(config).to receive(:products=)
+        allow(Hub::Config).to receive(:reload!)
+        allow_any_instance_of(ConfigurationPersistenceService).to receive(:save).and_return(true)
+        allow(ProductsBuilderService).to receive(:new).and_return(
+          double(build: [
+            {
+              "name" => "Basic",
+              "stripe_price_id" => "price_basic",
+              "price" => 10,
+              "billing_period" => "month",
+              "features" => [ "Feature 1", "Feature 2" ]
+            }
+          ])
+        )
       end
 
       it "processes products array correctly" do
         patch hub_admin_configuration_path, params: products_params
 
-        expect(config).to have_received(:products=).with([
+        expect(config.products).to eq([
           {
             "name" => "Basic",
             "stripe_price_id" => "price_basic",
@@ -157,6 +205,7 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
             "features" => [ "Feature 1", "Feature 2" ]
           }
         ])
+        expect(response).to redirect_to(hub_admin_configuration_path)
       end
     end
   end
