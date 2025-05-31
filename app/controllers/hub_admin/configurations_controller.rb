@@ -39,7 +39,11 @@ class HubAdmin::ConfigurationsController < HubAdmin::BaseController
   def products_params
     return {} unless params[:products].present?
 
-    params.require(:products).permit!
+    # Dynamic permit for any number of products
+    product_keys = params[:products].keys
+    permitted_attributes = product_keys.to_h { |key| [ key, [ :name, :stripe_price_id, :price, :billing_period, :features ] ] }
+
+    params.require(:products).permit(permitted_attributes)
   end
 
   def handle_success(result)

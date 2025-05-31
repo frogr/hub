@@ -37,6 +37,9 @@ module DesignSystemHelper
   # Alert Classes - Base styles only, colors applied dynamically
   ALERT_BASE = "p-6 rounded-xl border backdrop-blur-sm #{TEXT_BODY_SM}"
   ALERT_ERROR = ALERT_BASE
+  ALERT_WARNING = ALERT_BASE
+  ALERT_SUCCESS = ALERT_BASE
+  ALERT_INFO = ALERT_BASE
 
   # Form Classes - Large, Readable
   FORM_INPUT = "w-full px-6 py-4 #{TEXT_BODY} bg-primary-800/50 border border-primary-600/50 rounded-xl shadow-sm transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary-500/30 focus:border-primary-500 placeholder:text-neutral-500 #{TEXT_PRIMARY} backdrop-blur-sm"
