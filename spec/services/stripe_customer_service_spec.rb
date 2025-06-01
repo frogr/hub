@@ -17,7 +17,14 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'creates a new Stripe customer' do
-        stripe_customer = double('Stripe::Customer', id: 'cus_new123')
+        stripe_customer = double('Stripe::Customer',
+          id: 'cus_new123',
+          email: user.email,
+          name: nil,
+          description: nil,
+          metadata: { user_id: user.id.to_s, environment: Rails.env },
+          created: Time.now.to_i
+        )
 
         expect(Stripe::Customer).to receive(:create).with({
           email: user.email,
@@ -50,7 +57,14 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'retrieves the existing Stripe customer' do
-        stripe_customer = double('Stripe::Customer', id: 'cus_existing123')
+        stripe_customer = double('Stripe::Customer',
+          id: 'cus_existing123',
+          email: user.email,
+          name: nil,
+          description: nil,
+          metadata: { user_id: user.id.to_s },
+          created: Time.now.to_i
+        )
 
         expect(Stripe::Customer).to receive(:retrieve).with('cus_existing123').and_return(stripe_customer)
         expect(Stripe::Customer).not_to receive(:create)
@@ -60,7 +74,14 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'creates new customer when existing customer cannot be retrieved' do
-        new_customer = double('Stripe::Customer', id: 'cus_new123')
+        new_customer = double('Stripe::Customer',
+          id: 'cus_new123',
+          email: user.email,
+          name: nil,
+          description: nil,
+          metadata: { user_id: user.id.to_s, environment: Rails.env },
+          created: Time.now.to_i
+        )
 
         expect(Stripe::Customer).to receive(:retrieve).with('cus_existing123')
           .and_raise(Stripe::InvalidRequestError.new('Customer not found', 'customer'))
@@ -100,7 +121,14 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'updates the Stripe customer' do
-        updated_customer = double('Stripe::Customer')
+        updated_customer = double('Stripe::Customer',
+          id: 'cus_123',
+          email: user.email,
+          name: nil,
+          description: nil,
+          metadata: { user_id: user.id.to_s, environment: Rails.env },
+          created: Time.now.to_i
+        )
 
         expect(Stripe::Customer).to receive(:update).with(
           'cus_123',
@@ -149,7 +177,11 @@ RSpec.describe StripeCustomerService, type: :service do
       it 'syncs email from Stripe when different' do
         stripe_customer = double('Stripe::Customer',
           id: 'cus_123',
-          email: 'new@example.com'
+          email: 'new@example.com',
+          name: nil,
+          description: nil,
+          metadata: {},
+          created: Time.now.to_i
         )
 
         expect(Stripe::Customer).to receive(:retrieve).with('cus_123').and_return(stripe_customer)
@@ -163,7 +195,11 @@ RSpec.describe StripeCustomerService, type: :service do
       it 'does not update email when same' do
         stripe_customer = double('Stripe::Customer',
           id: 'cus_123',
-          email: 'old@example.com'
+          email: 'old@example.com',
+          name: nil,
+          description: nil,
+          metadata: {},
+          created: Time.now.to_i
         )
 
         expect(Stripe::Customer).to receive(:retrieve).with('cus_123').and_return(stripe_customer)

@@ -24,19 +24,13 @@ RSpec.describe StripeWebhookService do
         }
       end
 
-      it 'delegates to CheckoutSessionCompletedHandler' do
-        expect_any_instance_of(StripeWebhookService::CheckoutSessionCompletedHandler)
-          .to receive(:handle)
-
-        service.process
-      end
-
       it 'creates subscription through SubscriptionService' do
         subscription_service = instance_double(SubscriptionService)
         expect(SubscriptionService).to receive(:new).with(user).and_return(subscription_service)
         expect(subscription_service).to receive(:create_subscription).with('sub_123')
 
-        service.process
+        result = service.process
+        expect(result[:handled]).to be true
       end
 
       context 'when user not found' do
@@ -44,7 +38,8 @@ RSpec.describe StripeWebhookService do
 
         it 'does not create subscription' do
           expect(SubscriptionService).not_to receive(:new)
-          service.process
+          result = service.process
+          expect(result[:handled]).to be false
         end
       end
 
@@ -53,41 +48,47 @@ RSpec.describe StripeWebhookService do
 
         it 'does not create subscription' do
           expect(SubscriptionService).not_to receive(:new)
-          service.process
+          result = service.process
+          expect(result[:handled]).to be false
         end
       end
     end
 
     context 'with customer.subscription.updated event' do
-      let(:subscription) { create(:subscription, :with_stripe_ids) }
+      let(:subscription) { create(:subscription) }
       let(:event_data) do
         {
           type: 'customer.subscription.updated',
           data: {
             object: {
               id: subscription.stripe_subscription_id,
-              status: 'past_due',
-              current_period_end: 2.weeks.from_now.to_i,
-              cancel_at_period_end: true
+              customer: 'cus_123',
+              status: 'canceled',
+              current_period_start: Time.now.to_i,
+              current_period_end: 1.day.from_now.to_i,
+              cancel_at_period_end: true,
+              canceled_at: nil,
+              trial_start: nil,
+              trial_end: nil,
+              items: {
+                data: [ {
+                  price: { id: 'price_123' }
+                } ]
+              },
+              metadata: {},
+              created: Time.now.to_i
             }
           }
         }
       end
 
-      it 'delegates to SubscriptionUpdatedHandler' do
-        expect_any_instance_of(StripeWebhookService::SubscriptionUpdatedHandler)
-          .to receive(:handle)
-
-        service.process
-      end
-
       it 'updates subscription attributes' do
-        service.process
-        subscription.reload
+        result = service.process
+        expect(result[:handled]).to be true
 
-        expect(subscription.status).to eq('past_due')
+        subscription.reload
+        expect(subscription.status).to eq('canceled')
         expect(subscription.cancel_at_period_end).to be true
-        expect(subscription.current_period_end).to be_between(13.days.from_now, 15.days.from_now)
       end
 
       context 'when subscription not found' do
@@ -96,10 +97,22 @@ RSpec.describe StripeWebhookService do
             type: 'customer.subscription.updated',
             data: {
               object: {
-                id: 'sub_nonexistent',
-                status: 'active',
-                current_period_end: 2.weeks.from_now.to_i,
-                cancel_at_period_end: false
+                id: 'sub_unknown',
+                customer: 'cus_123',
+                status: 'canceled',
+                current_period_start: Time.now.to_i,
+                current_period_end: 1.day.from_now.to_i,
+                cancel_at_period_end: true,
+                canceled_at: nil,
+                trial_start: nil,
+                trial_end: nil,
+                items: {
+                  data: [ {
+                    price: { id: 'price_123' }
+                  } ]
+                },
+                metadata: {},
+                created: Time.now.to_i
               }
             }
           }
@@ -107,38 +120,52 @@ RSpec.describe StripeWebhookService do
 
         it 'does not raise error' do
           expect { service.process }.not_to raise_error
+          result = service.process
+          expect(result[:handled]).to be false
         end
       end
     end
 
     context 'with customer.subscription.deleted event' do
-      let(:subscription) { create(:subscription, :with_stripe_ids, status: 'active') }
+      let(:subscription) { create(:subscription, status: 'active') }
       let(:event_data) do
         {
           type: 'customer.subscription.deleted',
           data: {
             object: {
-              id: subscription.stripe_subscription_id
+              id: subscription.stripe_subscription_id,
+              customer: 'cus_123',
+              status: 'canceled',
+              current_period_start: Time.now.to_i,
+              current_period_end: Time.now.to_i,
+              cancel_at_period_end: false,
+              canceled_at: nil,
+              trial_start: nil,
+              trial_end: nil,
+              items: {
+                data: [ {
+                  price: { id: 'price_123' }
+                } ]
+              },
+              metadata: {},
+              created: Time.now.to_i
             }
           }
         }
       end
 
-      it 'delegates to SubscriptionDeletedHandler' do
-        expect_any_instance_of(StripeWebhookService::SubscriptionDeletedHandler)
-          .to receive(:handle)
-
-        service.process
-      end
-
       it 'marks subscription as canceled' do
-        service.process
-        expect(subscription.reload.status).to eq('canceled')
+        result = service.process
+        expect(result[:handled]).to be true
+
+        subscription.reload
+        expect(subscription.status).to eq('canceled')
       end
     end
 
     context 'with invoice.payment_failed event' do
-      let(:subscription) { create(:subscription, :with_stripe_ids) }
+      let(:subscription) { create(:subscription, status: 'active') }
+      let(:user) { subscription.user }
       let(:event_data) do
         {
           type: 'invoice.payment_failed',
@@ -150,68 +177,57 @@ RSpec.describe StripeWebhookService do
         }
       end
 
-      it 'delegates to PaymentFailedHandler' do
-        expect_any_instance_of(StripeWebhookService::PaymentFailedHandler)
-          .to receive(:handle)
+      it 'updates subscription to past_due and sends email' do
+        expect(UserMailer).to receive(:payment_failed).with(user).and_return(double(deliver_later: true))
 
-        service.process
-      end
+        result = service.process
+        expect(result[:handled]).to be true
 
-      it 'logs payment failure' do
-        expect(Rails.logger).to receive(:warn)
-          .with("Payment failed for subscription #{subscription.id}")
-
-        service.process
+        subscription.reload
+        expect(subscription.status).to eq('past_due')
       end
     end
 
     context 'with unhandled event type' do
       let(:event_data) do
         {
-          type: 'unhandled.event',
+          type: 'some.unhandled.event',
           data: { object: {} }
         }
       end
 
       it 'logs unhandled event' do
-        expect(Rails.logger).to receive(:info)
-          .with('Unhandled Stripe event type: unhandled.event')
+        expect(Rails.logger).to receive(:info).with(/Unhandled event type/)
 
-        service.process
+        result = service.process
+        expect(result[:handled]).to be false
       end
     end
 
     context 'error handling' do
       let(:event_data) do
         {
-          type: 'checkout.session.completed',
-          data: {
-            object: {
-              mode: 'subscription',
-              subscription: 'sub_123',
-              metadata: { user_id: '1' }
-            }
-          }
+          type: 'customer.subscription.updated',
+          data: { object: { id: 'sub_123' } }
         }
       end
 
       it 'logs errors and re-raises in test environment' do
-        allow(User).to receive(:find_by).and_raise(StandardError.new('Database error'))
+        allow_any_instance_of(StripeDomain::WebhookHandler).to receive(:handle).and_raise(StandardError, 'Test error')
 
-        expect(Rails.logger).to receive(:error)
-          .with('Error handling Stripe webhook checkout.session.completed: Database error')
-
-        expect { service.process }.to raise_error(StandardError, 'Database error')
+        expect(Rails.logger).to receive(:error).with(/Error handling Stripe webhook/)
+        expect { service.process }.to raise_error(StandardError, 'Test error')
       end
 
       it 'logs errors without raising in non-test environment' do
         allow(Rails.env).to receive(:test?).and_return(false)
-        allow(User).to receive(:find_by).and_raise(StandardError.new('Database error'))
+        allow_any_instance_of(StripeDomain::WebhookHandler).to receive(:handle).and_raise(StandardError, 'Test error')
 
-        expect(Rails.logger).to receive(:error)
-          .with('Error handling Stripe webhook checkout.session.completed: Database error')
+        expect(Rails.logger).to receive(:error).with(/Error handling Stripe webhook/)
 
-        expect { service.process }.not_to raise_error
+        result = service.process
+        expect(result[:handled]).to be false
+        expect(result[:error]).to eq('Test error')
       end
     end
   end

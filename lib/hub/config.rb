@@ -1,8 +1,6 @@
 require "yaml"
 require "active_model"
 require_relative "config/app_attributes"
-require_relative "config/design_attributes"
-require_relative "config/branding_attributes"
 require_relative "config/feature_flags"
 require_relative "config/seo_attributes"
 
@@ -48,8 +46,8 @@ module Hub
       @app_provided = attrs.key?(:app)
       @app_name_provided = attrs[:app] && attrs[:app].key?("name")
       @app_attributes = AppAttributes.new(attrs[:app] || {})
-      @design_attributes = DesignAttributes.new(attrs[:design] || {})
-      @branding_attributes = BrandingAttributes.new(attrs[:branding] || {})
+      @design_attributes = ::Config::DesignAttributes.new(attrs[:design] || {})
+      @branding_attributes = ::Config::BrandingAttributes.new(attrs[:branding] || {})
       @feature_flags = FeatureFlags.new(attrs[:features] || {})
       @seo_attributes = SeoAttributes.new(attrs[:seo] || {})
       @products = attrs[:products] || []
@@ -76,12 +74,12 @@ module Hub
 
     def design=(attributes)
       return if attributes.nil?
-      @design_attributes = DesignAttributes.new(attributes)
+      @design_attributes = ::Config::DesignAttributes.new(attributes)
     end
 
     def branding=(attributes)
       return if attributes.nil?
-      @branding_attributes = BrandingAttributes.new(attributes)
+      @branding_attributes = ::Config::BrandingAttributes.new(attributes)
     end
 
     def features=(attributes)

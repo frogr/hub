@@ -13,11 +13,11 @@ class StripeCustomerService
   def update
     return nil unless user.stripe_customer_id.present?
 
-    Stripe::Customer.update(
+    ::Stripe::Customer.update(
       user.stripe_customer_id,
       customer_attributes
     )
-  rescue Stripe::InvalidRequestError => e
+  rescue ::Stripe::InvalidRequestError => e
     Rails.logger.error "Failed to update Stripe customer: #{e.message}"
     nil
   end
@@ -40,17 +40,17 @@ class StripeCustomerService
   end
 
   def retrieve_customer
-    Stripe::Customer.retrieve(user.stripe_customer_id)
-  rescue Stripe::InvalidRequestError => e
+    ::Stripe::Customer.retrieve(user.stripe_customer_id)
+  rescue ::Stripe::InvalidRequestError => e
     Rails.logger.error "Failed to retrieve Stripe customer: #{e.message}"
     nil
   end
 
   def create_customer
-    customer = Stripe::Customer.create(customer_attributes)
+    customer = ::Stripe::Customer.create(customer_attributes)
     user.update!(stripe_customer_id: customer.id)
     customer
-  rescue Stripe::StripeError => e
+  rescue ::Stripe::StripeError => e
     Rails.logger.error "Failed to create Stripe customer: #{e.message}"
     nil
   end

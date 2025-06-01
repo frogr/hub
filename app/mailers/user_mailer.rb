@@ -14,4 +14,20 @@ class UserMailer < ApplicationMailer
       subject: "Sign in to your account"
     )
   end
+
+  def payment_failed(user)
+    @user = user
+    mail(
+      to: @user.email,
+      subject: "Payment failed for your subscription"
+    )
+  end
+
+  def trial_ending(user)
+    @user = user
+    mail(
+      to: @user.email,
+      subject: "Your trial is ending soon"
+    )
+  end
 end
