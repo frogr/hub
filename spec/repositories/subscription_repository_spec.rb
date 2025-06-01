@@ -105,7 +105,7 @@ RSpec.describe SubscriptionRepository do
     it 'cancels the subscription' do
       result = repository.cancel(subscription)
       expect(result).to be true
-      
+
       subscription.reload
       expect(subscription.status).to eq('canceled')
       expect(subscription.cancel_at_period_end).to be true
@@ -147,7 +147,7 @@ RSpec.describe SubscriptionRepository do
 
     it 'returns subscription statistics' do
       stats = repository.statistics
-      
+
       expect(stats[:total]).to eq(6)
       expect(stats[:active]).to eq(2)
       expect(stats[:trialing]).to eq(3)

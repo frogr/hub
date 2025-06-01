@@ -75,17 +75,14 @@ RSpec.describe 'Subscriptions', type: :request do
 
   describe 'POST /subscriptions' do
     let(:plan) { create(:plan, :with_stripe_price) }
-    let(:checkout_session) { double('Stripe::Checkout::Session', url: 'https://checkout.stripe.com/pay/cs_123') }
-    let(:subscription_service) { instance_double(SubscriptionService) }
-
-    before do
-      allow(SubscriptionService).to receive(:new).with(user, plan).and_return(subscription_service)
-    end
+    let(:checkout_form) { instance_double(CheckoutForm) }
 
     context 'with valid plan_id' do
       context 'when checkout session creation succeeds' do
         before do
-          allow(subscription_service).to receive(:create_checkout_session).and_return(checkout_session)
+          allow(CheckoutForm).to receive(:new).and_return(checkout_form)
+          allow(checkout_form).to receive(:save).and_return(true)
+          allow(checkout_form).to receive(:checkout_url).and_return('https://checkout.stripe.com/pay/cs_123')
         end
 
         it 'redirects to Stripe checkout' do
@@ -96,10 +93,12 @@ RSpec.describe 'Subscriptions', type: :request do
         end
 
         it 'passes correct URLs to service' do
-          expect(subscription_service).to receive(:create_checkout_session).with(
+          expect(CheckoutForm).to receive(:new).with(
+            plan_id: plan.id,
+            user_id: user.id,
             success_url: checkout_success_url(plan_id: plan.id),
             cancel_url: checkout_cancel_url
-          ).and_return(checkout_session)
+          ).and_return(checkout_form)
 
           post subscriptions_path(plan_id: plan.id)
         end
@@ -107,23 +106,23 @@ RSpec.describe 'Subscriptions', type: :request do
 
       context 'when checkout session creation fails' do
         before do
-          allow(subscription_service).to receive(:create_checkout_session).and_return(nil)
+          allow(CheckoutForm).to receive(:new).and_return(checkout_form)
+          allow(checkout_form).to receive(:save).and_return(false)
+          allow(checkout_form).to receive(:errors).and_return(
+            double(full_messages: [ 'Could not create checkout session' ])
+          )
         end
 
-        it 'redirects to subscriptions with error' do
+        it 'renders new with error' do
           post subscriptions_path(plan_id: plan.id)
 
-          expect(response).to redirect_to(subscriptions_path)
-          expect(flash[:alert]).to eq('Unable to create checkout session. Please try again.')
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(flash.now[:alert]).to eq('Could not create checkout session')
         end
       end
     end
 
     context 'without plan_id' do
-      before do
-        allow(SubscriptionService).to receive(:new).with(user, nil).and_return(subscription_service)
-      end
-
       it 'redirects to subscriptions index' do
         post subscriptions_path
 
@@ -134,16 +133,17 @@ RSpec.describe 'Subscriptions', type: :request do
   end
 
   describe 'POST /subscriptions/:id/cancel' do
-    let(:subscription_service) { instance_double(SubscriptionService) }
-    let(:subscription) { create(:subscription, user: user) }
+    let(:subscription) { create(:subscription, user: user, status: 'active') }
+    let(:repository) { instance_double(SubscriptionRepository) }
 
     before do
-      allow(SubscriptionService).to receive(:new).with(user).and_return(subscription_service)
+      allow(SubscriptionRepository).to receive(:new).and_return(repository)
     end
 
     context 'when cancellation succeeds' do
       before do
-        allow(subscription_service).to receive(:cancel_subscription).and_return(true)
+        allow(repository).to receive(:active_for_user).with(user).and_return(subscription)
+        allow(repository).to receive(:cancel).with(subscription).and_return(true)
       end
 
       it 'redirects with success message' do
@@ -156,7 +156,8 @@ RSpec.describe 'Subscriptions', type: :request do
 
     context 'when cancellation fails' do
       before do
-        allow(subscription_service).to receive(:cancel_subscription).and_return(false)
+        allow(repository).to receive(:active_for_user).with(user).and_return(subscription)
+        allow(repository).to receive(:cancel).with(subscription).and_return(false)
       end
 
       it 'redirects with error message' do

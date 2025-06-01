@@ -11,7 +11,7 @@ RSpec.describe Auth::Authenticator do
 
       it 'creates a session for the user' do
         result = authenticator.request_login(email: user.email)
-        
+
         expect(result.success?).to be true
         expect(result.data[:user]).to be_a(Auth::User)
         expect(result.data[:user].email).to eq('test@example.com')
@@ -34,7 +34,7 @@ RSpec.describe Auth::Authenticator do
     context 'with invalid email creation' do
       it 'returns failure when user creation fails' do
         allow_any_instance_of(User).to receive(:save).and_return(false)
-        
+
         result = authenticator.request_login(email: 'invalid@example.com')
         expect(result.failure?).to be true
         expect(result.error).to eq(:invalid_email)
@@ -49,11 +49,11 @@ RSpec.describe Auth::Authenticator do
     context 'with valid token' do
       it 'authenticates the user and claims the session' do
         result = authenticator.authenticate(token: session.token)
-        
+
         expect(result.success?).to be true
         expect(result.data[:user]).to be_a(Auth::User)
         expect(result.data[:user].id).to eq(user.id)
-        
+
         session.reload
         expect(session.claimed_at).to be_present
       end
@@ -62,7 +62,7 @@ RSpec.describe Auth::Authenticator do
     context 'with invalid token' do
       it 'returns failure' do
         result = authenticator.authenticate(token: 'invalid_token')
-        
+
         expect(result.failure?).to be true
         expect(result.error).to eq(:invalid_token)
       end
@@ -73,7 +73,7 @@ RSpec.describe Auth::Authenticator do
 
       it 'returns failure' do
         result = authenticator.authenticate(token: expired_session.token)
-        
+
         expect(result.failure?).to be true
         expect(result.error).to eq(:expired_token)
       end
@@ -84,7 +84,7 @@ RSpec.describe Auth::Authenticator do
 
       it 'returns failure' do
         result = authenticator.authenticate(token: claimed_session.token)
-        
+
         expect(result.failure?).to be true
         expect(result.error).to eq(:already_claimed)
       end

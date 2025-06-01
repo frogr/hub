@@ -69,7 +69,7 @@ RSpec.describe LoginForm do
       it 'adds appropriate error message' do
         authenticator = instance_double(Auth::Authenticator)
         result = Auth::Authenticator::Result.new(success: false, error: :session_creation_failed)
-        
+
         allow(Auth::Authenticator).to receive(:new).and_return(authenticator)
         allow(authenticator).to receive(:request_login).and_return(result)
 

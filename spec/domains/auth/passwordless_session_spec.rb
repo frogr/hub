@@ -36,7 +36,7 @@ RSpec.describe Auth::PasswordlessSession do
     it 'creates a new session for a user' do
       auth_user = Auth::User.from_model(user)
       new_session = described_class.create_for_user(auth_user)
-      
+
       expect(new_session).to be_a(Auth::PasswordlessSession)
       expect(new_session.user_id).to eq(user.id)
       expect(new_session.expires_at).to be > Time.current

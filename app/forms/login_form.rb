@@ -46,7 +46,7 @@ class LoginForm < BaseForm
   def error_message_for(error)
     case error
     when :invalid_email
-      "Invalid email address"
+      "User not found"
     when :session_creation_failed
       "Could not create login session. Please try again."
     else

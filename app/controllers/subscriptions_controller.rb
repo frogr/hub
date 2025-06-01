@@ -10,7 +10,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def new
-    redirect_to subscriptions_path, alert: "Please select a plan" unless @plan
+    unless @plan
+      redirect_to subscriptions_path, alert: "Please select a plan"
+      return
+    end
+
     @form = CheckoutForm.new(
       plan_id: @plan.id,
       user_id: current_user.id,
