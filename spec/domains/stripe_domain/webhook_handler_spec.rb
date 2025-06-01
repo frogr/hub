@@ -13,7 +13,7 @@ RSpec.describe StripeDomain::WebhookHandler do
     unless defined?(UserMailer)
       stub_const("UserMailer", Class.new)
     end
-    
+
     # Stub UserMailer methods
     allow(UserMailer).to receive(:payment_failed).and_return(double(deliver_later: true))
     allow(UserMailer).to receive(:trial_ending).and_return(double(deliver_later: true))
@@ -29,7 +29,7 @@ RSpec.describe StripeDomain::WebhookHandler do
                current_period_end: 1.month.from_now.to_i,
                trial_end: nil,
                cancel_at_period_end: false,
-               items: double("Items", data: [double("Item", price: double("Price", id: "price_123"))]),
+               items: double("Items", data: [ double("Item", price: double("Price", id: "price_123")) ]),
                metadata: { "user_id" => user.id.to_s, "plan_id" => plan.id.to_s })
       end
 
@@ -44,7 +44,7 @@ RSpec.describe StripeDomain::WebhookHandler do
         it "creates a new subscription" do
           # Update user to have stripe_customer_id
           user.update!(stripe_customer_id: "cus_123")
-          
+
           allow(StripeDomain::Subscription).to receive(:from_stripe)
             .with(stripe_subscription)
             .and_return(StripeDomain::Subscription.new(
@@ -53,7 +53,7 @@ RSpec.describe StripeDomain::WebhookHandler do
                           status: "active",
                           current_period_end: 1.month.from_now,
                           metadata: { "user_id" => user.id.to_s, "plan_id" => plan.id.to_s },
-                          items: [{ price: { id: "price_123" } }]
+                          items: [ { price: { id: "price_123" } } ]
                         ))
 
           # Stub Customer.find to return the customer with user_id

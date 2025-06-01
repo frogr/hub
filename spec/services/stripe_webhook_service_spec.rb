@@ -71,9 +71,9 @@ RSpec.describe StripeWebhookService do
               trial_start: nil,
               trial_end: nil,
               items: {
-                data: [{
+                data: [ {
                   price: { id: 'price_123' }
-                }]
+                } ]
               },
               metadata: {},
               created: Time.now.to_i
@@ -85,7 +85,7 @@ RSpec.describe StripeWebhookService do
       it 'updates subscription attributes' do
         result = service.process
         expect(result[:handled]).to be true
-        
+
         subscription.reload
         expect(subscription.status).to eq('canceled')
         expect(subscription.cancel_at_period_end).to be true
@@ -107,9 +107,9 @@ RSpec.describe StripeWebhookService do
                 trial_start: nil,
                 trial_end: nil,
                 items: {
-                  data: [{
+                  data: [ {
                     price: { id: 'price_123' }
-                  }]
+                  } ]
                 },
                 metadata: {},
                 created: Time.now.to_i
@@ -143,9 +143,9 @@ RSpec.describe StripeWebhookService do
               trial_start: nil,
               trial_end: nil,
               items: {
-                data: [{
+                data: [ {
                   price: { id: 'price_123' }
-                }]
+                } ]
               },
               metadata: {},
               created: Time.now.to_i
@@ -157,7 +157,7 @@ RSpec.describe StripeWebhookService do
       it 'marks subscription as canceled' do
         result = service.process
         expect(result[:handled]).to be true
-        
+
         subscription.reload
         expect(subscription.status).to eq('canceled')
       end
@@ -179,10 +179,10 @@ RSpec.describe StripeWebhookService do
 
       it 'updates subscription to past_due and sends email' do
         expect(UserMailer).to receive(:payment_failed).with(user).and_return(double(deliver_later: true))
-        
+
         result = service.process
         expect(result[:handled]).to be true
-        
+
         subscription.reload
         expect(subscription.status).to eq('past_due')
       end
@@ -198,7 +198,7 @@ RSpec.describe StripeWebhookService do
 
       it 'logs unhandled event' do
         expect(Rails.logger).to receive(:info).with(/Unhandled event type/)
-        
+
         result = service.process
         expect(result[:handled]).to be false
       end
@@ -214,7 +214,7 @@ RSpec.describe StripeWebhookService do
 
       it 'logs errors and re-raises in test environment' do
         allow_any_instance_of(StripeDomain::WebhookHandler).to receive(:handle).and_raise(StandardError, 'Test error')
-        
+
         expect(Rails.logger).to receive(:error).with(/Error handling Stripe webhook/)
         expect { service.process }.to raise_error(StandardError, 'Test error')
       end
@@ -222,9 +222,9 @@ RSpec.describe StripeWebhookService do
       it 'logs errors without raising in non-test environment' do
         allow(Rails.env).to receive(:test?).and_return(false)
         allow_any_instance_of(StripeDomain::WebhookHandler).to receive(:handle).and_raise(StandardError, 'Test error')
-        
+
         expect(Rails.logger).to receive(:error).with(/Error handling Stripe webhook/)
-        
+
         result = service.process
         expect(result[:handled]).to be false
         expect(result[:error]).to eq('Test error')

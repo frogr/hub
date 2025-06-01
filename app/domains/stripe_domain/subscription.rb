@@ -117,7 +117,7 @@ module StripeDomain
       def parse_items(stripe_subscription)
         items = stripe_subscription.items
         return [] unless items
-        
+
         items_data = items.respond_to?(:data) ? items.data : items["data"] || []
         items_data.map { |item| safe_item_to_hash(item) }
       end

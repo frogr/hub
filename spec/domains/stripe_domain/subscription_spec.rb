@@ -14,7 +14,7 @@ RSpec.describe StripeDomain::Subscription do
            canceled_at: nil,
            trial_start: nil,
            trial_end: nil,
-           items: double("Items", data: [stripe_item]),
+           items: double("Items", data: [ stripe_item ]),
            metadata: { "user_id" => "1", "plan_id" => "2" },
            created: 1_234_567_890)
   end
@@ -80,7 +80,7 @@ RSpec.describe StripeDomain::Subscription do
   describe "#price_id" do
     it "returns price id from first item" do
       subscription = described_class.new(
-        items: [{ price: { id: "price_123" } }]
+        items: [ { price: { id: "price_123" } } ]
       )
       expect(subscription.price_id).to eq("price_123")
     end
@@ -125,7 +125,7 @@ RSpec.describe StripeDomain::Subscription do
       expect(::Stripe::Subscription).to receive(:create)
         .with(
           customer: "cus_123",
-          items: [{ price: "price_123" }],
+          items: [ { price: "price_123" } ],
           metadata: { user_id: 1 },
           trial_period_days: 14
         )

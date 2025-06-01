@@ -17,7 +17,7 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'creates a new Stripe customer' do
-        stripe_customer = double('Stripe::Customer', 
+        stripe_customer = double('Stripe::Customer',
           id: 'cus_new123',
           email: user.email,
           name: nil,
@@ -57,7 +57,7 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'retrieves the existing Stripe customer' do
-        stripe_customer = double('Stripe::Customer', 
+        stripe_customer = double('Stripe::Customer',
           id: 'cus_existing123',
           email: user.email,
           name: nil,
@@ -74,7 +74,7 @@ RSpec.describe StripeCustomerService, type: :service do
       end
 
       it 'creates new customer when existing customer cannot be retrieved' do
-        new_customer = double('Stripe::Customer', 
+        new_customer = double('Stripe::Customer',
           id: 'cus_new123',
           email: user.email,
           name: nil,

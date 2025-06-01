@@ -131,13 +131,13 @@ module StripeDomain
     def handle_payment_succeeded
       invoice = @event.object
       return { handled: false, message: "No invoice object" } unless invoice
-      
+
       subscription_id = if invoice.respond_to?(:[])
         invoice["subscription"] || invoice[:subscription]
       elsif invoice.respond_to?(:subscription)
         invoice.subscription
       end
-      
+
       return { handled: false, message: "No subscription ID" } unless subscription_id
 
       subscription = ::Subscription.find_by(stripe_subscription_id: subscription_id)
@@ -150,14 +150,14 @@ module StripeDomain
     def handle_payment_failed
       invoice = @event.object
       return { handled: false, message: "No invoice object" } unless invoice
-      
+
       subscription_id = if invoice.respond_to?(:[])
         invoice["subscription"] || invoice[:subscription]
       elsif invoice.respond_to?(:subscription)
         invoice.subscription
       end
-      
-      
+
+
       return { handled: false, message: "No subscription ID" } unless subscription_id
 
       subscription = ::Subscription.find_by(stripe_subscription_id: subscription_id)
@@ -201,31 +201,31 @@ module StripeDomain
     def handle_checkout_session_completed
       session = @event.object
       return { handled: false, message: "No session object" } unless session
-      
+
       # Handle both Hash and Stripe::StripeObject
       mode = session.respond_to?(:[]) ? session["mode"] || session[:mode] : session.mode
       return { handled: false, message: "Not a subscription checkout" } unless mode == "subscription"
-      
+
       subscription_id = session.respond_to?(:[]) ? session["subscription"] || session[:subscription] : session.subscription
       return { handled: false, message: "No subscription ID" } unless subscription_id
-      
+
       # Access metadata
       metadata = if session.respond_to?(:[])
         session["metadata"] || session[:metadata]
       elsif session.respond_to?(:metadata)
         session.metadata
       end
-      
+
       user_id = metadata&.respond_to?(:[]) ? metadata["user_id"] || metadata[:user_id] : metadata&.user_id
       return { handled: false, message: "No user_id in metadata" } unless user_id
-      
+
       user = User.find_by(id: user_id)
       return { handled: false, message: "User not found" } unless user
-      
+
       # Use SubscriptionService to create the subscription
       subscription_service = SubscriptionService.new(user)
       subscription = subscription_service.create_subscription(subscription_id)
-      
+
       { handled: true, subscription: subscription }
     end
 

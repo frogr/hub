@@ -26,7 +26,7 @@ RSpec.describe StripeSignatureVerificationService do
 
     context 'with valid signature' do
       it 'returns constructed Stripe event' do
-        stripe_event = Stripe::Event.construct_from({ 
+        stripe_event = Stripe::Event.construct_from({
           id: 'evt_123',
           type: 'test.event',
           data: { object: { test: 'data' } },
