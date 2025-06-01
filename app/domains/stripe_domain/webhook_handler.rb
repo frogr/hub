@@ -165,6 +165,9 @@ module StripeDomain
 
       subscription.update!(status: "past_due")
 
+      # Log payment failure
+      Rails.logger.warn "Payment failed for subscription #{subscription.id}"
+
       # Send payment failed email
       UserMailer.payment_failed(subscription.user).deliver_later
 

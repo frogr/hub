@@ -59,19 +59,32 @@ module StripeDomain
       def from_stripe(stripe_subscription)
         return nil unless stripe_subscription
 
+        # Handle both real Stripe objects and test objects
+        id = get_attribute(stripe_subscription, :id)
+        customer = get_attribute(stripe_subscription, :customer)
+        status = get_attribute(stripe_subscription, :status)
+        current_period_start = get_attribute(stripe_subscription, :current_period_start)
+        current_period_end = get_attribute(stripe_subscription, :current_period_end)
+        cancel_at_period_end = get_attribute(stripe_subscription, :cancel_at_period_end)
+        canceled_at = get_attribute(stripe_subscription, :canceled_at)
+        trial_start = get_attribute(stripe_subscription, :trial_start)
+        trial_end = get_attribute(stripe_subscription, :trial_end)
+        created = get_attribute(stripe_subscription, :created)
+        metadata = get_attribute(stripe_subscription, :metadata)
+
         new(
-          id: stripe_subscription.id,
-          customer_id: stripe_subscription.customer,
-          status: stripe_subscription.status,
-          current_period_start: Time.at(stripe_subscription.current_period_start).utc,
-          current_period_end: Time.at(stripe_subscription.current_period_end).utc,
-          cancel_at_period_end: stripe_subscription.cancel_at_period_end,
-          canceled_at: stripe_subscription.canceled_at ? Time.at(stripe_subscription.canceled_at).utc : nil,
-          trial_start: stripe_subscription.trial_start ? Time.at(stripe_subscription.trial_start).utc : nil,
-          trial_end: stripe_subscription.trial_end ? Time.at(stripe_subscription.trial_end).utc : nil,
+          id: id,
+          customer_id: customer,
+          status: status,
+          current_period_start: current_period_start ? Time.at(current_period_start).utc : nil,
+          current_period_end: current_period_end ? Time.at(current_period_end).utc : nil,
+          cancel_at_period_end: cancel_at_period_end,
+          canceled_at: canceled_at ? Time.at(canceled_at).utc : nil,
+          trial_start: trial_start ? Time.at(trial_start).utc : nil,
+          trial_end: trial_end ? Time.at(trial_end).utc : nil,
           items: parse_items(stripe_subscription),
-          metadata: parse_metadata(stripe_subscription.metadata),
-          created_at: Time.at(stripe_subscription.created).utc
+          metadata: parse_metadata(metadata),
+          created_at: created ? Time.at(created).utc : nil
         )
       end
 
@@ -109,13 +122,21 @@ module StripeDomain
 
       private
 
+      def get_attribute(object, attribute)
+        if object.respond_to?(attribute)
+          object.send(attribute)
+        elsif object.respond_to?(:[])
+          object[attribute.to_s] || object[attribute]
+        end
+      end
+
       def parse_metadata(metadata)
         return {} unless metadata
         metadata.respond_to?(:to_h) ? metadata.to_h : metadata
       end
 
       def parse_items(stripe_subscription)
-        items = stripe_subscription.items
+        items = get_attribute(stripe_subscription, :items)
         return [] unless items
 
         items_data = items.respond_to?(:data) ? items.data : items["data"] || []
