@@ -11,7 +11,7 @@ module StripeDomain
       return handle_payment_event if @event.payment?
       return handle_customer_event if @event.customer?
 
-      { handled: false, message: "Unhandled event type: #{@event.type}" }
+      { handled: false, message: "Unhandled Stripe event type: #{@event.type}" }
     end
 
     private
