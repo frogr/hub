@@ -5,8 +5,8 @@ class UserMailer < ApplicationMailer
   #   en.user_mailer.magic_link.subject
   #
   def magic_link(user, session)
-    @user = user
-    @session = session
+    @user = user.is_a?(Auth::User) ? user.to_model : user
+    @session = session.is_a?(Auth::PasswordlessSession) ? session : session
     @magic_link_url = sign_in_url(token: @session.token)
 
     mail(

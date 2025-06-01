@@ -2,32 +2,52 @@ class SessionsController < ApplicationController
   before_action :redirect_if_authenticated, only: [ :new, :create, :show ]
 
   def new
-    @user = User.new
+    @form = LoginForm.new
   end
 
   def create
-    result = authentication_service.authenticate_with_magic_link
+    @form = LoginForm.new(email: params[:email])
 
-    if result[:success]
-      redirect_to new_session_path, notice: result[:message]
+    # First check if we should prevent login for specific cases
+    user = User.find_by(email: params[:email])
+
+    # Special handling for existing users with passwordless login disabled
+    if user && !user.passwordless_login_enabled?
+      redirect_to new_user_session_path, alert: "Password login required for this account"
+      return
+    end
+
+    # Prevent auto-creation of users by checking before request_login
+    if user.nil?
+      redirect_to new_session_path, alert: "User not found"
+      return
+    end
+
+    if @form.request_login
+      UserMailer.magic_link(@form.user.to_model, @form.session.to_model).deliver_later
+      redirect_to new_session_path, notice: "Magic link sent to your email"
     else
-      handle_authentication_failure(result[:message])
+      flash.now[:alert] = @form.errors.full_messages.first
+      render :new, status: :unprocessable_entity
     end
   end
 
   def show
-    result = authentication_service.authenticate_with_token(params[:token])
+    authenticator = Auth::Authenticator.new
+    result = authenticator.authenticate(token: params[:token])
 
-    if result[:success]
-      sign_in(result[:user])
-      redirect_to after_sign_in_path_for(result[:user]), notice: result[:message]
+    if result.success?
+      sign_in(result.data[:user].to_model)
+      redirect_to after_sign_in_path_for(result.data[:user].to_model), notice: "Successfully authenticated"
     else
-      redirect_to new_session_path, alert: result[:message]
+      redirect_to new_session_path, alert: error_message_for(result.error)
     end
   end
 
   def destroy
     if user_signed_in?
+      authenticator = Auth::Authenticator.new
+      authenticator.sign_out(user_id: current_user.id)
       sign_out(current_user)
       redirect_to new_session_path, notice: "Successfully signed out!"
     else
@@ -37,20 +57,18 @@ class SessionsController < ApplicationController
 
   private
 
-  def authentication_service
-    @authentication_service ||= AuthenticationService.new(
-      email: params[:email],
-      user_agent: request.user_agent,
-      remote_addr: request.remote_ip
-    )
-  end
-
-  def handle_authentication_failure(message)
-    case message
-    when "Password login required for this account"
-      redirect_to new_user_session_path, alert: message
+  def error_message_for(error)
+    case error
+    when :invalid_token
+      "Invalid or expired magic link"
+    when :expired_token
+      "Invalid or expired magic link"
+    when :already_claimed
+      "This magic link has already been used"
+    when :user_not_found
+      "User not found"
     else
-      redirect_to new_session_path, alert: message
+      "An error occurred. Please try again."
     end
   end
 

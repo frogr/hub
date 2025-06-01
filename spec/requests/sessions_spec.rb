@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Sessions", type: :request do
+  include ActiveJob::TestHelper
   let(:user) { create(:user) }
 
   before do
@@ -18,7 +19,9 @@ RSpec.describe "Sessions", type: :request do
     context "when user has passwordless login enabled" do
       it "creates a passwordless session and sends magic link email" do
         expect {
-          post "/sessions", params: { email: user.email }
+          perform_enqueued_jobs do
+            post "/sessions", params: { email: user.email }
+          end
         }.to change(PasswordlessSession, :count).by(1)
           .and change { ActionMailer::Base.deliveries.count }.by(1)
 
