@@ -26,14 +26,21 @@ RSpec.describe StripeSignatureVerificationService do
 
     context 'with valid signature' do
       it 'returns constructed Stripe event' do
-        expected_event = Stripe::Event.construct_from({ type: 'test.event' })
+        stripe_event = Stripe::Event.construct_from({ 
+          id: 'evt_123',
+          type: 'test.event',
+          data: { object: { test: 'data' } },
+          livemode: false,
+          created: Time.now.to_i
+        })
 
         expect(Stripe::Webhook).to receive(:construct_event)
           .with(payload, signature, webhook_secret)
-          .and_return(expected_event)
+          .and_return(stripe_event)
 
         result = service.verify_and_construct_event
-        expect(result).to eq(expected_event)
+        expect(result).to be_a(StripeDomain::Event)
+        expect(result.type).to eq('test.event')
       end
     end
 

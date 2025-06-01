@@ -8,10 +8,10 @@ class StripeSignatureVerificationService
   end
 
   def verify_and_construct_event
-    Stripe::Webhook.construct_event(payload, signature_header, webhook_secret)
+    ::StripeDomain::Event.construct_from(payload, signature_header, webhook_secret)
   rescue JSON::ParserError => e
     raise InvalidPayloadError, "Invalid JSON payload: #{e.message}"
-  rescue Stripe::SignatureVerificationError => e
+  rescue ::Stripe::SignatureVerificationError => e
     raise InvalidSignatureError, "Invalid webhook signature: #{e.message}"
   end
 
