@@ -12,7 +12,7 @@
     
     <div class="<%= DesignSystemHelper::CARD %> shadow-2xl">
       <div class="<%= DesignSystemHelper::CARD_BODY %>">
-        <%= form_with model: @form, url: sessions_path, method: :post, local: true, class: "space-y-8" do |form| %>
+        <%= form_with url: sessions_path, method: :post, local: true, class: "space-y-8" do |form| %>
           <div>
             <%= form.label :email, "Email address", class: DesignSystemHelper::FORM_LABEL %>
             <%= form.email_field :email, 

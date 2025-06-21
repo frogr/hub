@@ -1,44 +1,22 @@
 ---
-app:
-  name: Hub
-  class_name: Hub
-  tagline: Ship faster
-  description: Rails SaaS starter
-design:
-  primary_color: "#FF0000"
-  secondary_color: "#10B981"
-  accent_color: "#F59E0B"
-  danger_color: "#EF4444"
-  warning_color: "#F59E0B"
-  info_color: "#3B82F6"
-  success_color: "#10B981"
-  font_family: Inter
-  heading_font_family:
-  border_radius: 0.375rem
-branding:
-  logo_text: Hub
-  footer_text:
-  support_email: support@example.com
-features:
-  passwordless_auth: true
-  stripe_payments: true
-  admin_panel: true
-seo:
-  default_title_suffix:
-  default_description:
-  og_image: "/og-image.png"
-products:
-- name: Basic
-  stripe_price_id: price_123
-  price: 10
-  billing_period: month
-  features:
-  - Feature 1
-  - Feature 2
-- name: Pro
-  stripe_price_id: price_456
-  price: 20
-  billing_period: month
-  features:
-  - All Basic
-  - Pro Feature
+app_name: Hubby
+app_class_name: Hub
+tagline: Ship NOW, not tomorrow
+description: Rails SaaS starter
+logo_text: Hubby
+footer_text: "© 2025 Hubby. All rights reserved."
+support_email: hi@austn.net
+primary_color: "#694f4f"
+secondary_color: "#10B981"
+accent_color: "#F59E0B"
+danger_color: "#EF4444"
+warning_color: "#F59E0B"
+info_color: "#3B82F6"
+success_color: "#10B981"
+font_family: Inter
+heading_font_family: Inter
+border_radius: 0.375rem
+passwordless_auth: true
+stripe_payments: true
+admin_panel: true
+products: []

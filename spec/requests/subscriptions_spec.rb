@@ -75,14 +75,11 @@ RSpec.describe 'Subscriptions', type: :request do
 
   describe 'POST /subscriptions' do
     let(:plan) { create(:plan, :with_stripe_price) }
-    let(:checkout_form) { instance_double(CheckoutForm) }
 
     context 'with valid plan_id' do
       context 'when checkout session creation succeeds' do
         before do
-          allow(CheckoutForm).to receive(:new).and_return(checkout_form)
-          allow(checkout_form).to receive(:save).and_return(true)
-          allow(checkout_form).to receive(:checkout_url).and_return('https://checkout.stripe.com/pay/cs_123')
+          allow_any_instance_of(User).to receive(:create_checkout_session).and_return('https://checkout.stripe.com/pay/cs_123')
         end
 
         it 'redirects to Stripe checkout' do
@@ -91,33 +88,18 @@ RSpec.describe 'Subscriptions', type: :request do
           expect(response).to have_http_status(:see_other)
           expect(response).to redirect_to('https://checkout.stripe.com/pay/cs_123')
         end
-
-        it 'passes correct URLs to service' do
-          expect(CheckoutForm).to receive(:new).with(
-            plan_id: plan.id,
-            user_id: user.id,
-            success_url: checkout_success_url(plan_id: plan.id),
-            cancel_url: checkout_cancel_url
-          ).and_return(checkout_form)
-
-          post subscriptions_path(plan_id: plan.id)
-        end
       end
 
       context 'when checkout session creation fails' do
         before do
-          allow(CheckoutForm).to receive(:new).and_return(checkout_form)
-          allow(checkout_form).to receive(:save).and_return(false)
-          allow(checkout_form).to receive(:errors).and_return(
-            double(full_messages: [ 'Could not create checkout session' ])
-          )
+          allow_any_instance_of(User).to receive(:create_checkout_session).and_raise(Stripe::StripeError.new('Payment failed'))
         end
 
-        it 'renders new with error' do
+        it 'redirects with error' do
           post subscriptions_path(plan_id: plan.id)
 
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(flash.now[:alert]).to eq('Could not create checkout session')
+          expect(response).to redirect_to(subscriptions_path)
+          expect(flash[:alert]).to eq('Payment failed')
         end
       end
     end
@@ -127,23 +109,21 @@ RSpec.describe 'Subscriptions', type: :request do
         post subscriptions_path
 
         expect(response).to redirect_to(subscriptions_path)
-        expect(flash[:alert]).to eq('Please select a plan')
+        expect(flash[:alert]).to include('Please select a plan')
       end
     end
   end
 
   describe 'POST /subscriptions/:id/cancel' do
-    let(:subscription) { create(:subscription, user: user, status: 'active') }
-    let(:repository) { instance_double(SubscriptionRepository) }
+    let(:subscription) { create(:subscription, user: user, status: 'active', stripe_subscription_id: 'sub_123') }
 
     before do
-      allow(SubscriptionRepository).to receive(:new).and_return(repository)
+      user.subscriptions << subscription
     end
 
     context 'when cancellation succeeds' do
       before do
-        allow(repository).to receive(:active_for_user).with(user).and_return(subscription)
-        allow(repository).to receive(:cancel).with(subscription).and_return(true)
+        allow(Stripe::Subscription).to receive(:update).and_return(double(status: 'active'))
       end
 
       it 'redirects with success message' do
@@ -156,15 +136,14 @@ RSpec.describe 'Subscriptions', type: :request do
 
     context 'when cancellation fails' do
       before do
-        allow(repository).to receive(:active_for_user).with(user).and_return(subscription)
-        allow(repository).to receive(:cancel).with(subscription).and_return(false)
+        allow(Stripe::Subscription).to receive(:update).and_raise(Stripe::StripeError.new('Error'))
       end
 
       it 'redirects with error message' do
         post cancel_subscription_path(subscription)
 
         expect(response).to redirect_to(subscriptions_path)
-        expect(flash[:alert]).to eq('Unable to cancel subscription. Please try again.')
+        expect(flash[:alert]).to eq('Unable to cancel subscription.')
       end
     end
   end

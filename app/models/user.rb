@@ -5,11 +5,20 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :passwordless_sessions, as: :authenticatable, dependent: :destroy
-  has_one :subscription, dependent: :destroy
+  has_one :subscription, -> { where(status: [ :active, :trialing ]) }, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
 
   after_create :create_trial_subscription
 
   def passwordless_with(user_agent:, remote_addr:)
+    passwordless_sessions.create!(
+      user_agent: user_agent,
+      remote_addr: remote_addr,
+      expires_at: passwordless_session_duration.from_now
+    )
+  end
+
+  def create_passwordless_session!(user_agent: nil, remote_addr: nil)
     passwordless_sessions.create!(
       user_agent: user_agent,
       remote_addr: remote_addr,
@@ -48,11 +57,33 @@ class User < ApplicationRecord
   end
 
   def stripe_customer
-    StripeCustomerService.new(self).find_or_create
+    ensure_stripe_customer!
+    stripe_customer_id
   end
 
-  def create_or_update_stripe_customer
-    StripeCustomerService.new(self).find_or_create
+  def create_checkout_session(plan:, success_url:, cancel_url:)
+    # Create customer inline if needed
+    self.stripe_customer_id ||= Stripe::Customer.create(
+      email: email,
+      metadata: { user_id: id }
+    ).id
+    save!
+
+    Stripe::Checkout::Session.create(
+      customer: stripe_customer_id,
+      line_items: [ { price: plan.stripe_price_id, quantity: 1 } ],
+      mode: "subscription",
+      success_url: success_url,
+      cancel_url: cancel_url,
+      metadata: { user_id: id, plan_id: plan.id }
+    ).url
+  end
+
+
+  def recent_sessions(limit: 10)
+    passwordless_sessions
+      .order(created_at: :desc)
+      .limit(limit)
   end
 
   private

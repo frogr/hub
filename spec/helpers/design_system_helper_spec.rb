@@ -42,8 +42,8 @@ RSpec.describe DesignSystemHelper, type: :helper do
     let(:config) do
       instance_double(Hub::Config,
         app_name: "TestApp",
-        app_tagline: "Test your apps",
-        app_description: "The best testing platform",
+        tagline: "Test your apps",
+        description: "The best testing platform",
         logo_text: "TA",
         footer_text: "© 2024 TestApp",
         support_email: "help@testapp.com"

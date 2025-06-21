@@ -31,14 +31,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <%= form.label "config[app][name]", "App Name", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[app][name]", value: @config.app["name"], 
+            <%= form.text_field "config[app][name]", value: @config.app_name, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "MyApp" %>
           </div>
           
           <div>
             <%= form.label "config[app][class_name]", "Class Name", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[app][class_name]", value: @config.app["class_name"], 
+            <%= form.text_field "config[app][class_name]", value: @config.app_class_name, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "MyApp" %>
             <p class="<%= DesignSystemHelper::TEXT_CAPTION %> <%= DesignSystemHelper::TEXT_MUTED %> mt-1">
@@ -48,14 +48,14 @@
           
           <div class="md:col-span-2">
             <%= form.label "config[app][tagline]", "Tagline", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[app][tagline]", value: @config.app["tagline"], 
+            <%= form.text_field "config[app][tagline]", value: @config.tagline, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "Ship faster" %>
           </div>
           
           <div class="md:col-span-2">
             <%= form.label "config[app][description]", "Description", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_area "config[app][description]", value: @config.app["description"], 
+            <%= form.text_area "config[app][description]", value: @config.description, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 rows: 3,
                 placeholder: "Rails SaaS starter" %>
@@ -87,23 +87,23 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <%= form.label "config[branding][logo_text]", "Logo Text", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[branding][logo_text]", value: @config.branding["logo_text"], 
+            <%= form.text_field "config[branding][logo_text]", value: @config.logo_text, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "Hub" %>
           </div>
           
           <div>
             <%= form.label "config[branding][support_email]", "Support Email", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.email_field "config[branding][support_email]", value: @config.branding["support_email"], 
+            <%= form.email_field "config[branding][support_email]", value: @config.support_email, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "support@example.com" %>
           </div>
           
           <div class="md:col-span-2">
             <%= form.label "config[branding][footer_text]", "Footer Text", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[branding][footer_text]", value: @config.branding["footer_text"], 
+            <%= form.text_field "config[branding][footer_text]", value: @config.footer_text, 
                 class: DesignSystemHelper::FORM_INPUT, 
-                placeholder: "© 2024 Hub. All rights reserved." %>
+                placeholder: "© 2025 Hub. All rights reserved." %>
           </div>
         </div>
         
@@ -133,9 +133,9 @@
           <div>
             <%= form.label "config[design][primary_color]", "Primary Color", class: DesignSystemHelper::FORM_LABEL %>
             <div class="flex items-center space-x-2">
-              <%= form.color_field "config[design][primary_color]", value: @config.design["primary_color"], 
+              <%= form.color_field "config[design][primary_color]", value: @config.primary_color, 
                   class: "h-12 w-20 rounded cursor-pointer" %>
-              <%= form.text_field "config[design][primary_color]", value: @config.design["primary_color"], 
+              <%= form.text_field "config[design][primary_color]", value: @config.primary_color, 
                   class: DesignSystemHelper::FORM_INPUT + " flex-1", 
                   placeholder: "#3B82F6" %>
             </div>
@@ -144,9 +144,9 @@
           <div>
             <%= form.label "config[design][secondary_color]", "Secondary Color", class: DesignSystemHelper::FORM_LABEL %>
             <div class="flex items-center space-x-2">
-              <%= form.color_field "config[design][secondary_color]", value: @config.design["secondary_color"], 
+              <%= form.color_field "config[design][secondary_color]", value: @config.secondary_color, 
                   class: "h-12 w-20 rounded cursor-pointer" %>
-              <%= form.text_field "config[design][secondary_color]", value: @config.design["secondary_color"], 
+              <%= form.text_field "config[design][secondary_color]", value: @config.secondary_color, 
                   class: DesignSystemHelper::FORM_INPUT + " flex-1", 
                   placeholder: "#10B981" %>
             </div>
@@ -155,9 +155,9 @@
           <div>
             <%= form.label "config[design][accent_color]", "Accent Color", class: DesignSystemHelper::FORM_LABEL %>
             <div class="flex items-center space-x-2">
-              <%= form.color_field "config[design][accent_color]", value: @config.design["accent_color"], 
+              <%= form.color_field "config[design][accent_color]", value: @config.accent_color, 
                   class: "h-12 w-20 rounded cursor-pointer" %>
-              <%= form.text_field "config[design][accent_color]", value: @config.design["accent_color"], 
+              <%= form.text_field "config[design][accent_color]", value: @config.accent_color, 
                   class: DesignSystemHelper::FORM_INPUT + " flex-1", 
                   placeholder: "#F59E0B" %>
             </div>
@@ -166,9 +166,9 @@
           <div>
             <%= form.label "config[design][danger_color]", "Danger Color", class: DesignSystemHelper::FORM_LABEL %>
             <div class="flex items-center space-x-2">
-              <%= form.color_field "config[design][danger_color]", value: @config.design["danger_color"], 
+              <%= form.color_field "config[design][danger_color]", value: @config.danger_color, 
                   class: "h-12 w-20 rounded cursor-pointer" %>
-              <%= form.text_field "config[design][danger_color]", value: @config.design["danger_color"], 
+              <%= form.text_field "config[design][danger_color]", value: @config.danger_color, 
                   class: DesignSystemHelper::FORM_INPUT + " flex-1", 
                   placeholder: "#EF4444" %>
             </div>
@@ -177,9 +177,9 @@
           <div>
             <%= form.label "config[design][success_color]", "Success Color", class: DesignSystemHelper::FORM_LABEL %>
             <div class="flex items-center space-x-2">
-              <%= form.color_field "config[design][success_color]", value: @config.design["success_color"], 
+              <%= form.color_field "config[design][success_color]", value: @config.success_color, 
                   class: "h-12 w-20 rounded cursor-pointer" %>
-              <%= form.text_field "config[design][success_color]", value: @config.design["success_color"], 
+              <%= form.text_field "config[design][success_color]", value: @config.success_color, 
                   class: DesignSystemHelper::FORM_INPUT + " flex-1", 
                   placeholder: "#10B981" %>
             </div>
@@ -188,9 +188,9 @@
           <div>
             <%= form.label "config[design][warning_color]", "Warning Color", class: DesignSystemHelper::FORM_LABEL %>
             <div class="flex items-center space-x-2">
-              <%= form.color_field "config[design][warning_color]", value: @config.design["warning_color"], 
+              <%= form.color_field "config[design][warning_color]", value: @config.warning_color, 
                   class: "h-12 w-20 rounded cursor-pointer" %>
-              <%= form.text_field "config[design][warning_color]", value: @config.design["warning_color"], 
+              <%= form.text_field "config[design][warning_color]", value: @config.warning_color, 
                   class: DesignSystemHelper::FORM_INPUT + " flex-1", 
                   placeholder: "#F59E0B" %>
             </div>
@@ -198,21 +198,21 @@
           
           <div>
             <%= form.label "config[design][font_family]", "Font Family", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[design][font_family]", value: @config.design["font_family"], 
+            <%= form.text_field "config[design][font_family]", value: @config.font_family, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "Inter" %>
           </div>
           
           <div>
             <%= form.label "config[design][heading_font_family]", "Heading Font", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[design][heading_font_family]", value: @config.design["heading_font_family"], 
+            <%= form.text_field "config[design][heading_font_family]", value: @config.heading_font_family, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "Inter" %>
           </div>
           
           <div>
             <%= form.label "config[design][border_radius]", "Border Radius", class: DesignSystemHelper::FORM_LABEL %>
-            <%= form.text_field "config[design][border_radius]", value: @config.design["border_radius"], 
+            <%= form.text_field "config[design][border_radius]", value: @config.border_radius, 
                 class: DesignSystemHelper::FORM_INPUT, 
                 placeholder: "0.375rem" %>
           </div>
@@ -313,7 +313,7 @@
         <div class="space-y-4">
           <label class="flex items-center space-x-3">
             <%= check_box_tag "config[features][passwordless_auth]", "1", 
-                @config.features["passwordless_auth"] != false,
+                @config.passwordless_auth != false,
                 class: "w-5 h-5 rounded text-accent-600" %>
             <span class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
               Enable Passwordless Authentication
@@ -322,7 +322,7 @@
           
           <label class="flex items-center space-x-3">
             <%= check_box_tag "config[features][stripe_payments]", "1", 
-                @config.features["stripe_payments"] != false,
+                @config.stripe_payments != false,
                 class: "w-5 h-5 rounded text-accent-600" %>
             <span class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
               Enable Stripe Payments
@@ -331,7 +331,7 @@
           
           <label class="flex items-center space-x-3">
             <%= check_box_tag "config[features][admin_panel]", "1", 
-                @config.features["admin_panel"] != false,
+                @config.admin_panel != false,
                 class: "w-5 h-5 rounded text-accent-600" %>
             <span class="<%= DesignSystemHelper::TEXT_BODY %> <%= DesignSystemHelper::TEXT_PRIMARY %>">
               Enable Admin Panel
