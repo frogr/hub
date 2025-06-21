@@ -5,7 +5,7 @@ class HubAdmin::ConfigurationsController < HubAdmin::BaseController
 
   def update
     @config = Hub::Config.current
-    
+
     # Update config with flattened attributes
     if update_config_from_params
       handle_success
@@ -36,10 +36,10 @@ class HubAdmin::ConfigurationsController < HubAdmin::BaseController
       seo: [ :default_title_suffix, :default_description, :og_image ]
     )
   end
-  
+
   def update_config_from_params
     config_data = config_params
-    
+
     # Flatten nested params to match new config structure
     if config_data[:app]
       @config.app_name = config_data[:app][:name] if config_data[:app][:name]
@@ -47,30 +47,30 @@ class HubAdmin::ConfigurationsController < HubAdmin::BaseController
       @config.tagline = config_data[:app][:tagline] if config_data[:app][:tagline]
       @config.description = config_data[:app][:description] if config_data[:app][:description]
     end
-    
+
     if config_data[:branding]
       @config.logo_text = config_data[:branding][:logo_text] if config_data[:branding][:logo_text]
       @config.footer_text = config_data[:branding][:footer_text] if config_data[:branding][:footer_text]
       @config.support_email = config_data[:branding][:support_email] if config_data[:branding][:support_email]
     end
-    
+
     if config_data[:design]
       config_data[:design].each do |key, value|
         @config.send("#{key}=", value) if @config.respond_to?("#{key}=")
       end
     end
-    
+
     if config_data[:features]
       @config.passwordless_auth = config_data[:features][:passwordless_auth] == "1" if config_data[:features][:passwordless_auth]
       @config.stripe_payments = config_data[:features][:stripe_payments] == "1" if config_data[:features][:stripe_payments]
       @config.admin_panel = config_data[:features][:admin_panel] == "1" if config_data[:features][:admin_panel]
     end
-    
+
     # Handle products if provided
     if products_params.present?
       @config.products = products_params.values.map(&:to_h)
     end
-    
+
     if @config.valid?
       @config.save
       @config.apply_changes! if params[:apply_changes] == "true"

@@ -17,7 +17,7 @@ class SubscriptionsController < ApplicationController
       redirect_to subscriptions_path, alert: "Please select a plan"
       return
     end
-    
+
     session_url = current_user.create_checkout_session(
       plan: @plan,
       success_url: checkout_success_url(plan_id: @plan.id),

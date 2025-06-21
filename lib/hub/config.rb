@@ -51,11 +51,11 @@ module Hub
       def load_from_file
         return new unless File.exist?(CONFIG_PATH)
         data = YAML.load_file(CONFIG_PATH)
-        
+
         # Handle old nested format for backward compatibility
         if data.is_a?(Hash) && (data["app"] || data["design"] || data["branding"])
           flattened = {}
-          
+
           # Flatten app attributes
           if data["app"]
             flattened["app_name"] = data["app"]["name"]
@@ -63,28 +63,28 @@ module Hub
             flattened["tagline"] = data["app"]["tagline"]
             flattened["description"] = data["app"]["description"]
           end
-          
+
           # Flatten design attributes
           if data["design"]
             data["design"].each { |k, v| flattened[k] = v }
           end
-          
+
           # Flatten branding attributes
           if data["branding"]
             flattened["logo_text"] = data["branding"]["logo_text"]
             flattened["footer_text"] = data["branding"]["footer_text"]
             flattened["support_email"] = data["branding"]["support_email"]
           end
-          
+
           # Copy over other attributes
           flattened["products"] = data["products"] if data["products"]
           flattened["passwordless_auth"] = data.dig("features", "passwordless_auth") if data["features"]
           flattened["stripe_payments"] = data.dig("features", "stripe_payments") if data["features"]
           flattened["admin_panel"] = data.dig("features", "admin_panel") if data["features"]
-          
+
           data = flattened
         end
-        
+
         new(data)
       end
     end

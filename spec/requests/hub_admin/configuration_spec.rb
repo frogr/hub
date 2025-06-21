@@ -167,7 +167,7 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
         allow(config).to receive(:app_name=).with("")
         allow(config).to receive(:valid?).and_return(false)
         allow(config).to receive(:errors).and_return(
-          double(full_messages: ["App name can't be blank"], any?: true)
+          double(full_messages: [ "App name can't be blank" ], any?: true)
         )
       end
 
@@ -230,9 +230,9 @@ RSpec.describe "HubAdmin::Configuration", type: :request do
             "stripe_price_id" => ""
           }
         ]
-        
+
         expect(config).to receive(:products=).with(expected_products)
-        
+
         patch hub_admin_configuration_path, params: products_params
 
         expect(response).to redirect_to(hub_admin_configuration_path)
