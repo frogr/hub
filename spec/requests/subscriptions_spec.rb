@@ -123,7 +123,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
     context 'when cancellation succeeds' do
       before do
-        allow_any_instance_of(Subscription).to receive(:cancel!).and_return(true)
+        allow(Stripe::Subscription).to receive(:update).and_return(double(status: 'active'))
       end
 
       it 'redirects with success message' do
@@ -136,7 +136,7 @@ RSpec.describe 'Subscriptions', type: :request do
 
     context 'when cancellation fails' do
       before do
-        allow_any_instance_of(Subscription).to receive(:cancel!).and_return(false)
+        allow(Stripe::Subscription).to receive(:update).and_raise(Stripe::StripeError.new('Error'))
       end
 
       it 'redirects with error message' do

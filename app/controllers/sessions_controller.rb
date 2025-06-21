@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
 
   def create
     user = User.find_by(email: params[:email]&.strip&.downcase)
-    
+
     if user.nil?
       redirect_to new_session_path, alert: "User not found"
     elsif !user.passwordless_login_enabled?
@@ -19,10 +19,11 @@ class SessionsController < ApplicationController
   end
 
   def show
-    if session = PasswordlessSession.find_valid(params[:token])
+    session = PasswordlessSession.available.find_by(token: params[:token])
+    if session
       session.claim!
-      sign_in(session.user)
-      redirect_to after_sign_in_path_for(session.user), notice: "Successfully authenticated"
+      sign_in(session.authenticatable)
+      redirect_to after_sign_in_path_for(session.authenticatable), notice: "Successfully authenticated"
     else
       redirect_to new_session_path, alert: "Invalid or expired magic link"
     end

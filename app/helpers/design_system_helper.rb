@@ -162,11 +162,11 @@ module DesignSystemHelper
   end
 
   def app_tagline
-    Hub::Config.current.app_tagline
+    Hub::Config.current.tagline
   end
 
   def app_description
-    Hub::Config.current.app_description
+    Hub::Config.current.description
   end
 
   def logo_text

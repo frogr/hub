@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :passwordless_sessions, as: :authenticatable, dependent: :destroy
-  has_one :subscription, -> { where(status: [:active, :trialing]) }, dependent: :destroy
+  has_one :subscription, -> { where(status: [ :active, :trialing ]) }, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
 
   after_create :create_trial_subscription
@@ -57,43 +57,28 @@ class User < ApplicationRecord
   end
 
   def stripe_customer
-    StripeCustomerService.new(self).find_or_create
-  end
-
-  def create_or_update_stripe_customer
-    StripeCustomerService.new(self).find_or_create
+    ensure_stripe_customer!
+    stripe_customer_id
   end
 
   def create_checkout_session(plan:, success_url:, cancel_url:)
-    ensure_stripe_customer!
-    
+    # Create customer inline if needed
+    self.stripe_customer_id ||= Stripe::Customer.create(
+      email: email,
+      metadata: { user_id: id }
+    ).id
+    save!
+
     Stripe::Checkout::Session.create(
       customer: stripe_customer_id,
-      payment_method_types: ['card'],
-      line_items: [{ price: plan.stripe_price_id, quantity: 1 }],
-      mode: 'subscription',
+      line_items: [ { price: plan.stripe_price_id, quantity: 1 } ],
+      mode: "subscription",
       success_url: success_url,
       cancel_url: cancel_url,
-      metadata: { user_id: id, plan_id: plan.id },
-      subscription_data: plan.trial_days? ? { trial_period_days: plan.trial_days } : {}
+      metadata: { user_id: id, plan_id: plan.id }
     ).url
   end
 
-  def process_checkout_completed(stripe_subscription_id)
-    stripe_sub = Stripe::Subscription.retrieve(stripe_subscription_id)
-    plan = Plan.find_by!(stripe_price_id: stripe_sub.items.data.first.price.id)
-    
-    subscriptions.active_or_trialing.destroy_all # Cancel existing
-    
-    subscriptions.create!(
-      plan: plan,
-      stripe_subscription_id: stripe_subscription_id,
-      stripe_customer_id: stripe_sub.customer,
-      status: stripe_sub.status,
-      current_period_end: Time.at(stripe_sub.current_period_end),
-      cancel_at_period_end: stripe_sub.cancel_at_period_end
-    )
-  end
 
   def recent_sessions(limit: 10)
     passwordless_sessions
@@ -102,16 +87,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def ensure_stripe_customer!
-    return if stripe_customer_id?
-
-    customer = Stripe::Customer.create(
-      email: email,
-      metadata: { user_id: id, environment: Rails.env }
-    )
-    update!(stripe_customer_id: customer.id)
-  end
 
   def passwordless_session_duration
     1.hour

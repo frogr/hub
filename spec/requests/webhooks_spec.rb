@@ -28,10 +28,8 @@ RSpec.describe 'Webhooks', type: :request do
 
     context 'with valid signature' do
       it 'returns success' do
-        expect(Webhook).to receive(:process_stripe!).with(
-          payload: anything,
-          signature: signature
-        )
+        event = double('event', type: 'test.event')
+        expect(Stripe::Webhook).to receive(:construct_event).and_return(event)
 
         post_webhook({ type: 'test.event' })
 
@@ -42,7 +40,7 @@ RSpec.describe 'Webhooks', type: :request do
 
     context 'with invalid signature' do
       it 'returns bad request' do
-        allow(Webhook).to receive(:process_stripe!)
+        expect(Stripe::Webhook).to receive(:construct_event)
           .and_raise(Stripe::SignatureVerificationError.new('Invalid signature', 'sig'))
 
         post_webhook({ type: 'test.event' })
@@ -54,7 +52,7 @@ RSpec.describe 'Webhooks', type: :request do
 
     context 'with Stripe error' do
       it 'returns bad request' do
-        allow(Webhook).to receive(:process_stripe!)
+        expect(Stripe::Webhook).to receive(:construct_event)
           .and_raise(Stripe::StripeError.new('Something went wrong'))
 
         post_webhook({ type: 'test.event' })
@@ -68,7 +66,7 @@ RSpec.describe 'Webhooks', type: :request do
       let(:user) { create(:user) }
       let(:plan) { create(:plan, :with_stripe_price) }
 
-      it 'processes events through Webhook model' do
+      it 'processes checkout.session.completed events' do
         event_data = {
           id: 'evt_test',
           type: 'checkout.session.completed',
@@ -84,12 +82,23 @@ RSpec.describe 'Webhooks', type: :request do
           }
         }
 
-        expect(Webhook).to receive(:process_stripe!).with(
-          payload: event_data.to_json,
-          signature: signature
+        # Mock Stripe API calls
+        stripe_subscription = double('subscription',
+          items: double(data: [ double(price: double(id: plan.stripe_price_id)) ]),
+          status: 'active',
+          current_period_end: 1.month.from_now.to_i,
+          cancel_at_period_end: false
         )
 
-        post_webhook(event_data)
+        event = Stripe::Event.construct_from(event_data)
+
+        expect(Stripe::Webhook).to receive(:construct_event).and_return(event)
+        expect(Stripe::Subscription).to receive(:retrieve).with('sub_123').and_return(stripe_subscription)
+
+        expect {
+          post_webhook(event_data)
+        }.to change { user.subscriptions.count }.by(1)
+
         expect(response).to have_http_status(:ok)
       end
     end

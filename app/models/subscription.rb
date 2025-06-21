@@ -38,21 +38,4 @@ class Subscription < ApplicationRecord
     days = ((trial_ends_at - Time.current) / 1.day).ceil
     days.positive? ? days : 0
   end
-
-  def cancel!
-    return false unless stripe_subscription_id?
-
-    stripe_subscription = Stripe::Subscription.update(
-      stripe_subscription_id,
-      cancel_at_period_end: true
-    )
-    
-    update!(
-      cancel_at_period_end: true,
-      status: stripe_subscription.status
-    )
-    true
-  rescue Stripe::StripeError
-    false
-  end
 end
